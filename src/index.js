@@ -2,7 +2,7 @@ import { Selector } from 'testcafe';
 
 export default (selector) => {
     if (selector !== void 0 && typeof selector !== 'string')
-        throw new Error(`If selector option is present it should be a string, but it was ${typeof selector}`);
+        throw new Error(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
 
     return Selector(complexSelector => {
         function validateVueVersion () {
