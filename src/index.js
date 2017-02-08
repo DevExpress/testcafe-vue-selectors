@@ -16,8 +16,7 @@ export default (selector) => {
         function walkDomNodes (node, fn) {
             if (node.childNodes) {
                 for (let i = 0; i < node.childNodes.length; i++) {
-                    const childNode = node.childNodes[i];
-
+                    const childNode       = node.childNodes[i];
                     const isInstanceFound = fn(childNode);
 
                     if (!isInstanceFound)
@@ -31,7 +30,7 @@ export default (selector) => {
         function findFirstRootInstance () {
             let instance = null;
 
-            walkDomNodes(document, (node) => {
+            walkDomNodes(document, node => {
                 instance = node.__vue__;
 
                 return !!instance;
@@ -74,11 +73,7 @@ export default (selector) => {
                 }
             }
 
-            walkVueComponentNodes(root, 0, (node, tagIndex) => {
-                const componentTag = getComponentTag(node);
-
-                return tags[tagIndex] === componentTag;
-            });
+            walkVueComponentNodes(root, 0, (node, tagIndex) => tags[tagIndex] === getComponentTag(node));
 
             return foundComponents;
         }
@@ -123,7 +118,7 @@ export default (selector) => {
 
                 Object.keys(instance._data)
                     .filter(key => !(props && key in props) && !(getters && key in getters))
-                    .map(key => {
+                    .forEach(key => {
                         result[key] = instance._data[key];
                     });
 
