@@ -4,36 +4,6 @@ import { ClientFunction } from 'testcafe';
 fixture `VueSelector`
     .page('http://localhost:8080/test/data');
 
-test('should throw exception for non-valid selectors', async t => {
-    for (const selector of [null, false, {}, 42]) {
-        try {
-            VueSelector(selector);
-        }
-        catch (e) {
-            await t.expect(e.message).eql(`If selector option is present it should be a string, but it was ${typeof selector}`);
-        }
-    }
-});
-
-test('there is no Vue on the tested page', async t => {
-    await ClientFunction(() => window.Vue = null)();
-
-    const body = await VueSelector('body');
-
-    await t.expect(body.tagName).eql('body');
-});
-
-test('supported version', async t => {
-    await ClientFunction(() => window.Vue.version = '1.0.28')();
-
-    try {
-        await VueSelector();
-    }
-    catch (e) {
-        await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
-    }
-});
-
 test('root node', async t => {
     const rootVue = await VueSelector().vue;
 
@@ -71,3 +41,32 @@ test.skip('Selector.getVueProperty', async t => {
     await t.expect(VueSelector('list').getVueProperty('id')).eql('list1');
 });
 
+test('should throw exception for non-valid selectors', async t => {
+    for (const selector of [null, false, {}, 42]) {
+        try {
+            VueSelector(selector);
+        }
+        catch (e) {
+            await t.expect(e.message).eql(`If selector option is present it should be a string, but it was ${typeof selector}`);
+        }
+    }
+});
+
+test('there is no Vue on the tested page', async t => {
+    await ClientFunction(() => window.Vue = null)();
+
+    const body = await VueSelector('body');
+
+    await t.expect(body.tagName).eql('body');
+});
+
+test('supported version', async t => {
+    await ClientFunction(() => window.Vue.version = '1.0.28')();
+
+    try {
+        await VueSelector();
+    }
+    catch (e) {
+        await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
+    }
+});
