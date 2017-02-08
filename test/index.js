@@ -20,8 +20,6 @@ test('there is no Vue on the tested page', async t => {
 
     const body = await VueSelector('body');
 
-    console.log(JSON.stringify(body));
-
     await t.expect(body.tagName).eql('body');
 });
 
@@ -53,9 +51,23 @@ test('selector', async t => {
 });
 
 test('composite selector', async t => {
-    const listItemVue6 = await VueSelector('list list-item').nth(5).vue;
+    const listItem = VueSelector('list list-item');
 
-    await t.expect(VueSelector('list list-item').count).eql(6)
-        .expect(listItemVue6.props.id).eql('list2-item3');
+    await t.expect(listItem.count).eql(6);
+
+    const listItemVue6 = await listItem.nth(5).vue;
+
+    await t.expect(listItemVue6.props.id).eql('list2-item3');
+});
+
+test.skip('Selector.getVueProperty', async t => {
+    // Current API
+    const listVue = await VueSelector('list').vue;
+
+    await t.expect(listVue.props.id).eql('list1');
+
+    // New API
+    // Will be done after https://github.com/DevExpress/testcafe/issues/1212
+    await t.expect(VueSelector('list').getVueProperty('id')).eql('list1');
 });
 

@@ -6,8 +6,8 @@ export default (selector) => {
 
     return Selector(complexSelector => {
         function validateVueVersion () {
-            var SUPPORTED_VUE_VERSION = 2;
-            var vueVersion            = parseInt(window.Vue.version.split('.')[0], 10);
+            const SUPPORTED_VUE_VERSION = 2;
+            const vueVersion            = parseInt(window.Vue.version.split('.')[0], 10);
 
             if (vueVersion < SUPPORTED_VUE_VERSION)
                 throw new Error('testcafe-vue-selectors supports Vue version 2.x and newer');
@@ -15,10 +15,10 @@ export default (selector) => {
 
         function walkDomNodes (node, fn) {
             if (node.childNodes) {
-                for (var i = 0; i < node.childNodes.length; i++) {
-                    var childNode = node.childNodes[i];
+                for (let i = 0; i < node.childNodes.length; i++) {
+                    const childNode = node.childNodes[i];
 
-                    var isInstanceFound = fn(childNode);
+                    const isInstanceFound = fn(childNode);
 
                     if (!isInstanceFound)
                         walkDomNodes(childNode, fn);
@@ -29,7 +29,7 @@ export default (selector) => {
         }
 
         function findFirstRootInstance () {
-            var instance = null;
+            let instance = null;
 
             walkDomNodes(document, (node) => {
                 instance = node.__vue__;
@@ -55,7 +55,7 @@ export default (selector) => {
         }
 
         function filterNodes (root, tags) {
-            var foundComponents = [];
+            const foundComponents = [];
 
             function walkVueComponentNodes (node, tagIndex, checkFn) {
                 if (checkFn(node, tagIndex)) {
@@ -67,15 +67,15 @@ export default (selector) => {
                     tagIndex++;
                 }
 
-                for (var i = 0; i < node.$children.length; i++) {
-                    var childNode = node.$children[i];
+                for (let i = 0; i < node.$children.length; i++) {
+                    const childNode = node.$children[i];
 
                     walkVueComponentNodes(childNode, tagIndex, checkFn);
                 }
             }
 
-            walkVueComponentNodes(root, 0, function (node, tagIndex) {
-                var componentTag = getComponentTag(node);
+            walkVueComponentNodes(root, 0, (node, tagIndex) => {
+                const componentTag = getComponentTag(node);
 
                 return tags[tagIndex] === componentTag;
             });
@@ -88,20 +88,23 @@ export default (selector) => {
 
         validateVueVersion();
 
-        var rootInstance = findFirstRootInstance();
+        const rootInstance = findFirstRootInstance();
+
+        if (!rootInstance)
+            return null;
 
         if (!complexSelector)
             return rootInstance.$el;
 
-        var componentTags = getComponentTagNames(complexSelector);
+        const componentTags = getComponentTagNames(complexSelector);
 
         return filterNodes(rootInstance, componentTags);
     })(selector).addCustomDOMProperties({
         vue: node => {
             function getData (instance, prop) {
-                var result = {};
+                const result = {};
 
-                Object.keys(prop).forEach(function (key) {
+                Object.keys(prop).forEach(key => {
                     result[key] = instance[key];
                 });
 
@@ -114,15 +117,13 @@ export default (selector) => {
             }
 
             function getState (instance) {
-                var props   = instance._props || instance.$options.props;
-                var getters = instance.$options.vuex && instance.$options.vuex.getters;
-                var result  = {};
+                const props   = instance._props || instance.$options.props;
+                const getters = instance.$options.vuex && instance.$options.vuex.getters;
+                const result  = {};
 
                 Object.keys(instance._data)
-                    .filter(function (key) {
-                        return !(props && key in props) && !(getters && key in getters);
-                    })
-                    .map(function (key) {
+                    .filter(key => !(props && key in props) && !(getters && key in getters))
+                    .map(key => {
                         result[key] = instance._data[key];
                     });
 
@@ -133,7 +134,7 @@ export default (selector) => {
                 return getData(instance, instance.$options.computed || {});
             }
 
-            var nodeVue = node.__vue__;
+            const nodeVue = node.__vue__;
 
             if (!nodeVue)
                 return null;

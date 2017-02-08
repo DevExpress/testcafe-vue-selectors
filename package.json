@@ -16,7 +16,7 @@
     "lint": "eslint src/index.js test/index.js",
     "http-server": "http-server ./ -s",
     "testcafe": "testcafe all test/index.js --app \"npm run http-server\" --app-init-delay 3000",
-    "test": "npm run lint && npm build && npm run testcafe",
+    "test": "npm run lint && npm run build && npm run testcafe",
     "build": "babel src --out-dir lib",
     "publish-please": "publish-please",
     "prepublish": "publish-please guard"
