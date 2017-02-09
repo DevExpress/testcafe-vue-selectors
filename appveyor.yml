@@ -1,14 +1,12 @@
 environment:
-  matrix:
-    - nodejs_version: "stable"
-    - nodejs_version: "4"
-    - nodejs_version: "0.12"
-    - nodejs_version: "0.10"
+  NODEJS_VERSION: "stable"
 
 install:
 - ps: >-
-    Install-Product node $env:nodejs_version
+    Install-Product node $env:NODEJS_VERSION
+
     choco install GoogleChrome
+
     choco install Firefox
 
 - cmd: >-
