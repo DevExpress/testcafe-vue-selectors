@@ -47,7 +47,7 @@ test('should throw exception for non-valid selectors', async t => {
             VueSelector(selector);
         }
         catch (e) {
-            await t.expect(e.message).eql(`If selector option is present it should be a string, but it was ${typeof selector}`);
+            await t.expect(e.message).eql(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
         }
     }
 });
