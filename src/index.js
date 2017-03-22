@@ -94,23 +94,29 @@ export default (selector) => {
         const componentTags = getComponentTagNames(complexSelector);
 
         return filterNodes(rootInstance, componentTags);
-    })(selector).addCustomDOMProperties({
-        vue: node => {
-            function getData (instance, prop) {
-                const result = {};
+    })(selector).addCustomMethods({
+        getVueProps: (node, name) => {
+            function getProps (instance) {
+                const result   = {};
+                const vueProps = instance.$options.props || {};
 
-                Object.keys(prop).forEach(key => {
+                Object.keys(vueProps).forEach(key => {
                     result[key] = instance[key];
                 });
-
 
                 return result;
             }
 
-            function getProps (instance) {
-                return getData(instance, instance.$options.props || {});
-            }
+            const nodeVueInstance = node.__vue__;
 
+            if (!nodeVueInstance)
+                return null;
+
+            const props = getProps(nodeVueInstance);
+
+            return props[name];
+        },
+        getVueState: (node, name) => {
             function getState (instance) {
                 const props   = instance._props || instance.$options.props;
                 const getters = instance.$options.vuex && instance.$options.vuex.getters;
@@ -125,20 +131,35 @@ export default (selector) => {
                 return result;
             }
 
-            function getComputed (instance) {
-                return getData(instance, instance.$options.computed || {});
-            }
+            const nodeVueInstance = node.__vue__;
 
-            const nodeVue = node.__vue__;
-
-            if (!nodeVue)
+            if (!nodeVueInstance)
                 return null;
 
-            return {
-                props:    getProps(nodeVue),
-                state:    getState(nodeVue),
-                computed: getComputed(nodeVue)
-            };
+            const state = getState(nodeVueInstance);
+
+            return state[name];
+        },
+        getVueComputed: (node, name) => {
+            function getComputed (instance) {
+                const result      = {};
+                const vueComputed = instance.$options.computed || {};
+
+                Object.keys(vueComputed).forEach(key => {
+                    result[key] = instance[key];
+                });
+
+                return result;
+            }
+
+            const nodeVueInstance = node.__vue__;
+
+            if (!nodeVueInstance)
+                return null;
+
+            const computed = getComputed(nodeVueInstance);
+
+            return computed[name];
         }
     });
 };
