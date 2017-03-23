@@ -13,28 +13,19 @@ export default (selector) => {
                 throw new Error('testcafe-vue-selectors supports Vue version 2.x and newer');
         }
 
-        function walkDomNodes (node, fn) {
-            if (node.childNodes) {
-                for (let i = 0; i < node.childNodes.length; i++) {
-                    const childNode       = node.childNodes[i];
-                    const isInstanceFound = fn(childNode);
-
-                    if (!isInstanceFound)
-                        walkDomNodes(childNode, fn);
-                    else
-                        break;
-                }
-            }
-        }
-
         function findFirstRootInstance () {
-            let instance = null;
+            let instance     = null;
+            const treeWalker = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT, () => NodeFilter.FILTER_ACCEPT, false);
+            let currentNode  = treeWalker.nextNode();
 
-            walkDomNodes(document, node => {
-                instance = node.__vue__;
+            while (currentNode) {
+                instance = currentNode.__vue__;
 
-                return !!instance;
-            });
+                if (instance)
+                    break;
+
+                currentNode = treeWalker.nextNode();
+            }
 
             return instance;
         }
