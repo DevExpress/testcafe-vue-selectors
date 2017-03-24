@@ -86,7 +86,7 @@ export default (selector) => {
 
         return filterNodes(rootInstance, componentTags);
     })(selector).addCustomMethods({
-        getVue: node => {
+        getVue: (node, fn) => {
             function getData (instance, prop) {
                 const result = {};
 
@@ -125,11 +125,14 @@ export default (selector) => {
             if (!nodeVue)
                 return null;
 
-            return {
-                props:    getProps(nodeVue),
-                state:    getState(nodeVue),
-                computed: getComputed(nodeVue)
-            };
+            const props    = getProps(nodeVue);
+            const state    = getState(nodeVue);
+            const computed = getComputed(nodeVue);
+
+            if (typeof fn === 'function')
+                return fn({ props, state, computed });
+
+            return { props, state, computed };
         }
     });
 };
