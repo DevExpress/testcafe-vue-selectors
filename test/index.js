@@ -5,40 +5,31 @@ fixture `VueSelector`
     .page('http://localhost:8080/test/data');
 
 test('root node', async t => {
-    const rootVue = await VueSelector().vue;
+    const root    = VueSelector();
+    const rootVue = await root.getVue();
 
-    await t.expect(VueSelector().exists).ok()
+    await t.expect(root.exists).ok()
         .expect(rootVue.state.rootProp1).eql(1);
 });
 
 test('selector', async t => {
-    const listVue = await VueSelector('list').vue;
+    const list    = VueSelector('list');
+    const listVue = await list.getVue();
 
-    await t.expect(VueSelector('list').count).eql(2)
+    await t.expect(list.count).eql(2)
         .expect(VueSelector('list-item').count).eql(6)
         .expect(listVue.props.id).eql('list1')
         .expect(listVue.computed.reversedId).eql('1tsil');
 });
 
 test('composite selector', async t => {
-    const listItem = VueSelector('list list-item');
+    const listItem       = VueSelector('list list-item');
+    const listItemVue6   = await listItem.nth(5).getVue();
+    const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
 
-    await t.expect(listItem.count).eql(6);
-
-    const listItemVue6 = await listItem.nth(5).vue;
-
-    await t.expect(listItemVue6.props.id).eql('list2-item3');
-});
-
-test.skip('Selector.getVueProperty', async t => {
-    // Current API
-    const listVue = await VueSelector('list').vue;
-
-    await t.expect(listVue.props.id).eql('list1');
-
-    // New API
-    // Will be done after https://github.com/DevExpress/testcafe/issues/1212
-    await t.expect(VueSelector('list').getVueProperty('id')).eql('list1');
+    await t.expect(listItem.count).eql(6)
+        .expect(listItemVue6.props.id).eql('list2-item3')
+        .expect(listItemVue5Id).eql('list2-item2');
 });
 
 test('should throw exception for non-valid selectors', async t => {
