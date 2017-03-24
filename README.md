@@ -1,15 +1,17 @@
 # testcafe-vue-selectors
 
+**This module is under construction. Do not use it in production code.**
+
 This plugin provides selector extensions that make it easier to test Vue components with [TestCafe](https://github.com/DevExpress/testcafe).
 These extensions allow you to test Vue component state and result markup together.
 
-##Install
+## Install
 
 `$ npm install testcafe-vue-selectors`
 
-##Usage
+## Usage
 
-####Create selectors for Vue components
+#### Create selectors for Vue components
 
 `VueSelector` allows you to select page elements by the component tagName or the nested component tagNames.
 For instance, you can create Vue selectors as follows
@@ -38,7 +40,7 @@ test('Add new item', async t => {
 });
 ```
 
-####Obtaining component's props, computed and state
+#### Obtaining component's props, computed and state
 
 In additional to [testcafe snapshot properties](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component. You can use them in an assertion directly thus simplifying assertion logic.
 To get these data, use the `vue` property of the `VueSelector` snapshot.
@@ -59,7 +61,7 @@ test('Add new item', async t => {
 });
 ```
 
-####Limitations
+#### Limitations
 `testcafe-vue-selectors` support Vue starting with version 2.
 
 Only props, state and computed parts of a Vue component are avalible.
