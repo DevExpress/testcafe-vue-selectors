@@ -5,26 +5,29 @@ fixture `VueSelector`
     .page('http://localhost:8080/test/data');
 
 test('root node', async t => {
-    const rootVue = VueSelector();
+    const root    = VueSelector();
+    const rootVue = await root.getVue();
 
-    await t.expect(rootVue.exists).ok()
-        .expect(rootVue.getVueState('rootProp1')).eql(1);
+    await t.expect(root.exists).ok()
+        .expect(rootVue.state.rootProp1).eql(1);
 });
 
 test('selector', async t => {
-    const list = VueSelector('list');
+    const list    = VueSelector('list');
+    const listVue = await list.getVue();
 
     await t.expect(list.count).eql(2)
         .expect(VueSelector('list-item').count).eql(6)
-        .expect(list.getVueProps('id')).eql('list1')
-        .expect(list.getVueComputed('reversedId')).eql('1tsil');
+        .expect(listVue.props.id).eql('list1')
+        .expect(listVue.computed.reversedId).eql('1tsil');
 });
 
 test('composite selector', async t => {
-    const listItem = VueSelector('list list-item');
+    const listItem    = VueSelector('list list-item');
+    const listItemVue6 = await listItem.nth(5).getVue();
 
     await t.expect(listItem.count).eql(6)
-        .expect(listItem.nth(5).getVueProps('id')).eql('list2-item3');
+        .expect(listItemVue6.props.id).eql('list2-item3');
 });
 
 test('should throw exception for non-valid selectors', async t => {

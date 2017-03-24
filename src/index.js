@@ -86,28 +86,22 @@ export default (selector) => {
 
         return filterNodes(rootInstance, componentTags);
     })(selector).addCustomMethods({
-        getVueProps: (node, name) => {
-            function getProps (instance) {
-                const result   = {};
-                const vueProps = instance.$options.props || {};
+        getVue: node => {
+            function getData (instance, prop) {
+                const result = {};
 
-                Object.keys(vueProps).forEach(key => {
+                Object.keys(prop).forEach(key => {
                     result[key] = instance[key];
                 });
+
 
                 return result;
             }
 
-            const nodeVueInstance = node.__vue__;
+            function getProps (instance) {
+                return getData(instance, instance.$options.props || {});
+            }
 
-            if (!nodeVueInstance)
-                return null;
-
-            const props = getProps(nodeVueInstance);
-
-            return props[name];
-        },
-        getVueState: (node, name) => {
             function getState (instance) {
                 const props   = instance._props || instance.$options.props;
                 const getters = instance.$options.vuex && instance.$options.vuex.getters;
@@ -122,35 +116,20 @@ export default (selector) => {
                 return result;
             }
 
-            const nodeVueInstance = node.__vue__;
-
-            if (!nodeVueInstance)
-                return null;
-
-            const state = getState(nodeVueInstance);
-
-            return state[name];
-        },
-        getVueComputed: (node, name) => {
             function getComputed (instance) {
-                const result      = {};
-                const vueComputed = instance.$options.computed || {};
-
-                Object.keys(vueComputed).forEach(key => {
-                    result[key] = instance[key];
-                });
-
-                return result;
+                return getData(instance, instance.$options.computed || {});
             }
 
-            const nodeVueInstance = node.__vue__;
+            const nodeVue = node.__vue__;
 
-            if (!nodeVueInstance)
+            if (!nodeVue)
                 return null;
 
-            const computed = getComputed(nodeVueInstance);
-
-            return computed[name];
+            return {
+                props:    getProps(nodeVue),
+                state:    getState(nodeVue),
+                computed: getComputed(nodeVue)
+            };
         }
     });
 };
