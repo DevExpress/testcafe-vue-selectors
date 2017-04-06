@@ -1,7 +1,5 @@
 # testcafe-vue-selectors
 
-**This module is under construction. Do not use it in production code.**
-
 This plugin provides selector extensions that make it easier to test Vue components with [TestCafe](https://github.com/DevExpress/testcafe).
 These extensions allow you to test Vue component state and result markup together.
 
@@ -19,7 +17,7 @@ For instance, you can create Vue selectors as follows
 ```js
 VueSelector('list')
 VueSelector('list list-item')
-VueSelector()
+VueSelector() // returns the root Vue instance
 ```
 
 You can combine Vue selectors with testcafe `Selector` filter functions like `.withText`, `.nth` and [other](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/selectors.html#functional-style-selectors).
@@ -27,7 +25,8 @@ You can combine Vue selectors with testcafe `Selector` filter functions like `.w
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
-fixture('Vue application testing').page('http://localhost:1337');
+fixture `Vue application testing`
+    .page('http://localhost:1337');
 
 test('Add new item', async t => {
     const addButton = VueSelector('add-item-button');
@@ -43,16 +42,27 @@ test('Add new item', async t => {
 #### Obtaining component's props, computed and state
 
 In additional to [testcafe snapshot properties](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component. You can use them in an assertion directly thus simplifying assertion logic.
-To get these data, use the `vue` property of the `VueSelector` snapshot.
-The following example illustrates how you can do this.
+To get these data, use the Vue selector’s .getVue() method.
 
+If you call this method without parameters, it returns an object of the following structure.
+```js
+{
+    props:    <component_props>,
+    state:    <component_state>,
+    computed: <component_computed>
+}
+```
+
+
+Example
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
-fixture('Vue application testing').page('http://localhost:1337');
+fixture `Vue application testing`
+    .page('http://localhost:1337');
 
-test('Add new item', async t => {
-    const statusBarVue = await VueSelector('status-bar').vue;
+test('check StatusBar state', async t => {
+    const statusBarVue = await VueSelector('status-bar').getVue();
 
     await t
         .expect(statusBarVue.props.theme).eql('default')
@@ -61,7 +71,27 @@ test('Add new item', async t => {
 });
 ```
 
-#### Limitations
+As an alternative, the .getVue() method can take a function that returns the required data. This function acts as a filter. Its argument is an object returned by .getVue(), i.e. { props: ..., state: ..., computed:...}.
+```js
+VueSelector('Component').getVue(({ props, state, computed }) => {...})
+```
+Example
+```js
+import VueSelector from 'testcafe-vue-selectors';
+
+fixture `Vue application testing`
+    .page('http://localhost:1337');
+
+test('check ListItem5', async t => {
+    const listItem       = VueSelector('list list-item');
+    const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
+
+    await t.expect(listItemVue5Id).eql('list2-item2');
+});
+```
+Respectively, the .getVue() method can be called for the VueSelector or the snapshot this selector returns.
+
+####Limitations
 `testcafe-vue-selectors` support Vue starting with version 2.
 
 Only props, state and computed parts of a Vue component are avalible.
