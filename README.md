@@ -89,7 +89,7 @@ test('check ListItem5', async t => {
     await t.expect(listItemVue5Id).eql('list2-item2');
 });
 ```
-Respectively, the .getVue() method can be called for the VueSelector or the snapshot this selector returns.
+The .getVue() method can be called for the VueSelector or the snapshot this selector returns.
 
 ####Limitations
 `testcafe-vue-selectors` support Vue starting with version 2.
