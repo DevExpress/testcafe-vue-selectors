@@ -36,13 +36,15 @@ Suppose you have the following markup.
 </script>
 ```
 
-To get the root Vue instance use VueSelector constructor without parameters.
+To get the root Vue instance, use the VueSelector constructor without parameters.
+
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
 const rootVue = VueSelector();
 ```
-Respectively, the `rootVue` will contain `<div id="todo-app">` element.
+
+The rootVue variable will contain the <div id="todo-app"> element.
 
 
 To get a root DOM element for a component, pass the component name to the VueSelector constructor.
