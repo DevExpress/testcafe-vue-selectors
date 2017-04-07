@@ -12,30 +12,77 @@ These extensions allow you to test Vue component state and result markup togethe
 #### Create selectors for Vue components
 
 `VueSelector` allows you to select page elements by the component tagName or the nested component tagNames.
-For instance, you can create Vue selectors as follows
+
+Suppose you have the following markup.
 
 ```js
-VueSelector('list')
-VueSelector('list list-item')
-VueSelector() // returns the root Vue instance
+<div id="todo-app">
+    <todo-input />
+    <todo-list>
+        <todo-item priority="High">Item 1</todo-item>
+        <todo-item priority="Low">Item 2</todo-item>
+    </todo-list>   
+    <div className="items-count">Items count: <span>{{itemCount}}</span></div>
+</div>
+<script>
+    Vue.component('todo-input', {...});
+    Vue.component('todo-list', {...});
+    Vue.component('todo-item', {...});
+    
+    new Vue({ 
+        el:   '#todo-app',
+        data: {...}
+    });
+</script>
 ```
 
-You can combine Vue selectors with testcafe `Selector` filter functions like `.withText`, `.nth` and [other](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/selectors.html#functional-style-selectors).
+To get the root Vue instance use VueSelector constructor without parameters.
+```js
+import VueSelector from 'testcafe-vue-selectors';
+
+const rootVue = VueSelector();
+```
+Respectively, `rootVue` will contain `<div id="todo-app">`
+
+
+To get a root DOM element for a component, pass the component name to the VueSelector constructor.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
-fixture `Vue application testing`
-    .page('http://localhost:1337');
+const todoInput = VueSelector('todo-input');
+```
 
-test('Add new item', async t => {
-    const addButton = VueSelector('add-item-button');
+To obtain a nested component, you can use a combined selector.
+```js
+import VueSelector from 'testcafe-vue-selectors';
 
-    await t.click(addButton);
+const todoItem = VueSelector('todo-list todo-item');
+```
 
-    const itemLabel = VueSelector('label')
+You can combine Vue selectors with testcafe `Selector` filter functions like `.find`, `.withText`, `.nth` and [other](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/selectors.html#functional-style-selectors).
 
-    await t.expect(itemLabel.textContent).eql('New Item');
+```js
+import VueSelector from 'testcafe-vue-selectors';
+
+var itemsCount = VueSelector().find('.items-count span');
+```
+
+Let’s use the API described above to add a task to a Todo list and check that the number of items changed.
+```js
+import VueSelector from 'testcafe-vue-selectors';
+
+fixture `TODO list test`
+	.page('http://localhost:1337');
+
+test('Add new task', async t => {
+    const todoTextInput = VueSelector('todo-input');
+    const todoItem      = VueSelector('todo-list todo-item');
+
+    await t
+        .typeText(todoTextInput, 'My Item')
+        .pressKey('enter')
+        .expect(todoItem.count).eql(3);
 });
 ```
 
@@ -53,43 +100,48 @@ If you call this method without parameters, it returns an object of the followin
 }
 ```
 
+Example
+```js
+import VueSelector from 'testcafe-vue-selector';
+
+fixture `TODO list test`
+	.page('http://localhost:1337');
+
+test('Check list item', async t => {
+    const todoItem = VueSelector('todo-item');
+
+    await t.expect(todoItem.getVue().props.priority).eql('High');
+    await t.expect(todoItem.getVue().state.isActive).eql(false);
+    await t.expect(todoItem.getVue().computed.text).eql('Item 1');
+});
+```
+
+As an alternative, the .getVue() method can take a function that returns the required property, state or computed. This function acts as a filter. Its argument is an object returned by .getVue(), i.e. `{ props: ..., state: ..., computed: ...}`.
+
+```js
+VueSelector('component').getVue(({ props, state, computed }) => {...});
+```
+
 
 Example
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
-fixture `Vue application testing`
+fixture `TODO list test`
     .page('http://localhost:1337');
 
-test('check StatusBar state', async t => {
-    const statusBarVue = await VueSelector('status-bar').getVue();
+test('Check list item', async t => {
+    const todoItem = VueSelector('todo-item');
 
     await t
-        .expect(statusBarVue.props.theme).eql('default')
-        .expect(statusBarVue.computed.displayText).eql('[date]: my text')
-        .expect(statusBarVue.state.text).eql('my text');
+        .expect(todoItem.getVue(({ props }) => props.priority)).eql('High')
+        .expect(todoItem.getVue(({ state }) => state.isActive)).eql(false)
+        .expect(todoItem.getVue(({ computed }) => computed.text)).eql('Item 1');
 });
+
 ```
 
-As an alternative, the `.getVue()` method can take a function that returns the required data. This function acts as a filter. Its argument is an object returned by `.getVue()`, i.e. `{ props: ..., state: ..., computed:...}`.
-```js
-VueSelector('Component').getVue(({ props, state, computed }) => {...})
-```
-Example
-```js
-import VueSelector from 'testcafe-vue-selectors';
-
-fixture `Vue application testing`
-    .page('http://localhost:1337');
-
-test('check ListItem5', async t => {
-    const listItem       = VueSelector('list list-item');
-    const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
-
-    await t.expect(listItemVue5Id).eql('list2-item2');
-});
-```
-The `.getVue()` method can be called for the VueSelector or the snapshot this selector returns.
+The .getVue() method can be called for the VueSelector or the snapshot this selector returns.
 
 #### Limitations
 `testcafe-vue-selectors` support Vue starting with version 2.
