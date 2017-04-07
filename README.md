@@ -41,7 +41,7 @@ test('Add new item', async t => {
 
 #### Obtaining component's props, computed and state
 
-In additional to [testcafe snapshot properties](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component. You can use them in an assertion directly thus simplifying assertion logic.
+In additional to [DOM Node State](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component. You can use them in an assertion directly thus simplifying assertion logic.
 To get these data, use the Vue selector’s .getVue() method.
 
 If you call this method without parameters, it returns an object of the following structure.
@@ -71,7 +71,7 @@ test('check StatusBar state', async t => {
 });
 ```
 
-As an alternative, the .getVue() method can take a function that returns the required data. This function acts as a filter. Its argument is an object returned by .getVue(), i.e. { props: ..., state: ..., computed:...}.
+As an alternative, the `.getVue()` method can take a function that returns the required data. This function acts as a filter. Its argument is an object returned by `.getVue()`, i.e. `{ props: ..., state: ..., computed:...}`.
 ```js
 VueSelector('Component').getVue(({ props, state, computed }) => {...})
 ```
@@ -89,9 +89,9 @@ test('check ListItem5', async t => {
     await t.expect(listItemVue5Id).eql('list2-item2');
 });
 ```
-The .getVue() method can be called for the VueSelector or the snapshot this selector returns.
+The `.getVue()` method can be called for the VueSelector or the snapshot this selector returns.
 
-####Limitations
+#### Limitations
 `testcafe-vue-selectors` support Vue starting with version 2.
 
 Only props, state and computed parts of a Vue component are avalible.
