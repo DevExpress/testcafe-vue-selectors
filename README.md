@@ -90,7 +90,7 @@ test('Add new task', async t => {
 
 #### Obtaining component's props, computed and state
 
-In additional to [DOM Node State](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component. You can use them in an assertion directly thus simplifying assertion logic.
+In addition to [DOM Node State](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component. You can use them in an assertion directly thus simplifying assertion logic.
 To get these data, use the Vue selector’s .getVue() method.
 
 If you call this method without parameters, it returns an object of the following structure.
