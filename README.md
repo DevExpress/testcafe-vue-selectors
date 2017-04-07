@@ -42,7 +42,7 @@ import VueSelector from 'testcafe-vue-selectors';
 
 const rootVue = VueSelector();
 ```
-Respectively, `rootVue` will contain `<div id="todo-app">`
+Respectively, the `rootVue` will contain `<div id="todo-app">` element.
 
 
 To get a root DOM element for a component, pass the component name to the VueSelector constructor.
