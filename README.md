@@ -119,7 +119,7 @@ test('Check list item', async t => {
 });
 ```
 
-As an alternative, the `.getVue()` method can take a function that returns the required property, state or computed property. This function acts as a filter. Its argument is an object returned by .getVue(), i.e. `{ props: ..., state: ..., computed: ...}`.
+As an alternative, the `.getVue()` method can take a function that returns the required property, state or computed property. This function acts as a filter. Its argument is an object returned by `.getVue()`, i.e. `{ props: ..., state: ..., computed: ...}`.
 
 ```js
 VueSelector('component').getVue(({ props, state, computed }) => {...});
@@ -144,7 +144,7 @@ test('Check list item', async t => {
 
 ```
 
-The .getVue() method can be called for the VueSelector or the snapshot this selector returns.
+The `.getVue()` method can be called for the VueSelector or the snapshot this selector returns.
 
 #### Limitations
 `testcafe-vue-selectors` support Vue starting with version 2.
