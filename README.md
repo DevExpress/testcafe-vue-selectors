@@ -15,7 +15,7 @@ These extensions allow you to test Vue component state and result markup togethe
 
 Suppose you have the following markup.
 
-```js
+```html
 <div id="todo-app">
     <todo-input />
     <todo-list>
