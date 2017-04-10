@@ -44,7 +44,7 @@ import VueSelector from 'testcafe-vue-selectors';
 const rootVue = VueSelector();
 ```
 
-The rootVue variable will contain the <div id="todo-app"> element.
+The `rootVue` variable will contain the `<div id="todo-app">` element.
 
 
 To get a root DOM element for a component, pass the component name to the VueSelector constructor.
@@ -91,7 +91,7 @@ test('Add new task', async t => {
 #### Obtaining component's props, computed and state
 
 In addition to [DOM Node State](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component. You can use them in an assertion directly thus simplifying assertion logic.
-To get these data, use the Vue selector’s .getVue() method.
+To get these data, use the Vue selector’s `.getVue()` method.
 
 If you call this method without parameters, it returns an object of the following structure.
 ```js
@@ -112,13 +112,14 @@ fixture `TODO list test`
 test('Check list item', async t => {
     const todoItem = VueSelector('todo-item');
 
-    await t.expect(todoItem.getVue().props.priority).eql('High');
-    await t.expect(todoItem.getVue().state.isActive).eql(false);
-    await t.expect(todoItem.getVue().computed.text).eql('Item 1');
+    await t
+        .expect(todoItem.getVue().props.priority).eql('High')
+        .expect(todoItem.getVue().state.isActive).eql(false)
+        .expect(todoItem.getVue().computed.text).eql('Item 1');
 });
 ```
 
-As an alternative, the .getVue() method can take a function that returns the required property, state or computed property. This function acts as a filter. Its argument is an object returned by .getVue(), i.e. `{ props: ..., state: ..., computed: ...}`.
+As an alternative, the `.getVue()` method can take a function that returns the required property, state or computed property. This function acts as a filter. Its argument is an object returned by .getVue(), i.e. `{ props: ..., state: ..., computed: ...}`.
 
 ```js
 VueSelector('component').getVue(({ props, state, computed }) => {...});
