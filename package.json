@@ -38,7 +38,7 @@
     "selectors",
     "plugin"
   ],
-  "dependencies": {
+  "peerDependencies": {
       "testcafe": "^0.15.0"
   }
 }
