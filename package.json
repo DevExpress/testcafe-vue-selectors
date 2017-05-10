@@ -1,6 +1,6 @@
 {
   "name": "testcafe-vue-selectors",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "VueJS selectors for TestCafe",
   "repository": "https://github.com/DevExpress/testcafe-vue-selectors",
   "author": {
@@ -30,7 +30,7 @@
     "http-server": "^0.9.0",
     "publish-please": "^2.2.0",
     "vue": "^2.1.10",
-    "testcafe": "^0.15.0"
+    "testcafe": "*"
   },
   "keywords": [
     "testcafe",
@@ -40,6 +40,6 @@
     "plugin"
   ],
   "peerDependencies": {
-      "testcafe": "^0.15.0"
+      "testcafe": "*"
   }
 }
