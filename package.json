@@ -40,6 +40,6 @@
     "plugin"
   ],
   "peerDependencies": {
-      "testcafe": ">=0.15.0"
+      "testcafe": "*"
   }
 }
