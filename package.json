@@ -29,7 +29,8 @@
     "eslint-plugin-testcafe": "^0.2.1",
     "http-server": "^0.9.0",
     "publish-please": "^2.2.0",
-    "vue": "^2.1.10"
+    "vue": "^2.1.10",
+    "testcafe": "^0.15.0"
   },
   "keywords": [
     "testcafe",
@@ -38,7 +39,7 @@
     "selectors",
     "plugin"
   ],
-  "dependencies": {
+  "peerDependencies": {
       "testcafe": "^0.15.0"
   }
 }
