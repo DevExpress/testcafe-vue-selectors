@@ -94,14 +94,19 @@ In addition to [DOM Node State](http://devexpress.github.io/testcafe/documentati
 
 To get these data, use the Vue selector’s `.getVue()` method.
 
-This method returns a [client function](https://devexpress.github.io/testcafe/documentation/test-api/obtaining-data-from-the-client.html) that resolves to an object of the following structure.
+The `getVue()` method returns a [client function](https://devexpress.github.io/testcafe/documentation/test-api/obtaining-data-from-the-client.html). This function resolves to an object that contains component's properties, state and computed properties.
 
 ```js
-{
-    props:    <component_props>,
-    state:    <component_state>,
-    computed: <component_computed>
-}
+const vueComponent      = VueSelector('componentTag');
+const vueComponentState = await vueComponent.getVue();
+
+\\ >> vueComponentState
+\\
+\\ {
+\\     props:    <component_props>,
+\\     state:    <component_state>,
+\\     computed: <component_computed>
+\\ }
 ```
 
 The returned client function can be passed to assertions activating the [Smart Assertion Query mechanism](https://devexpress.github.io/testcafe/documentation/test-api/assertions/#smart-assertion-query-mechanism).
