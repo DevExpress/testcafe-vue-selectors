@@ -100,13 +100,13 @@ The `getVue()` method returns a [client function](https://devexpress.github.io/t
 const vueComponent      = VueSelector('componentTag');
 const vueComponentState = await vueComponent.getVue();
 
-\\ >> vueComponentState
-\\
-\\ {
-\\     props:    <component_props>,
-\\     state:    <component_state>,
-\\     computed: <component_computed>
-\\ }
+// >> vueComponentState
+//
+// {
+//     props:    <component_props>,
+//     state:    <component_state>,
+//     computed: <component_computed>
+// }
 ```
 
 The returned client function can be passed to assertions activating the [Smart Assertion Query mechanism](https://devexpress.github.io/testcafe/documentation/test-api/assertions/#smart-assertion-query-mechanism).
