@@ -1,139 +1,139 @@
 import { Selector } from 'testcafe';
 
-export default (selector) => {
-    if (selector !== void 0 && typeof selector !== 'string')
-        throw new Error(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
+export default Selector(complexSelector => {
+    function validateSelector (selector) {
+        if (selector !== void 0 && typeof selector !== 'string')
+            throw new Error(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
+    }
 
-    return Selector(complexSelector => {
-        function validateVueVersion () {
-            const SUPPORTED_VUE_VERSION = 2;
-            const vueVersion            = parseInt(window.Vue.version.split('.')[0], 10);
+    function validateVueVersion () {
+        const SUPPORTED_VUE_VERSION = 2;
+        const vueVersion            = parseInt(window.Vue.version.split('.')[0], 10);
 
-            if (vueVersion < SUPPORTED_VUE_VERSION)
-                throw new Error('testcafe-vue-selectors supports Vue version 2.x and newer');
+        if (vueVersion < SUPPORTED_VUE_VERSION)
+            throw new Error('testcafe-vue-selectors supports Vue version 2.x and newer');
+    }
+
+    function findFirstRootInstance () {
+        let instance     = null;
+        const treeWalker = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT, () => NodeFilter.FILTER_ACCEPT, false);
+        let currentNode  = treeWalker.nextNode();
+
+        while (currentNode) {
+            instance = currentNode.__vue__;
+
+            if (instance)
+                break;
+
+            currentNode = treeWalker.nextNode();
         }
 
-        function findFirstRootInstance () {
-            let instance     = null;
-            const treeWalker = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT, () => NodeFilter.FILTER_ACCEPT, false);
-            let currentNode  = treeWalker.nextNode();
+        return instance;
+    }
 
-            while (currentNode) {
-                instance = currentNode.__vue__;
+    function getComponentTagNames (componentSelector) {
+        return componentSelector
+            .split(' ')
+            .filter(el => !!el)
+            .map(el => el.trim().toLowerCase());
+    }
 
-                if (instance)
-                    break;
+    function getComponentTag (instance) {
+        return instance.$options.name ||
+               instance.$options._componentTag ||
+               instance.$options.__file ||
+               '';
+    }
 
-                currentNode = treeWalker.nextNode();
-            }
+    function filterNodes (root, tags) {
+        const foundComponents = [];
 
-            return instance;
-        }
-
-        function getComponentTagNames (componentSelector) {
-            return componentSelector
-                .split(' ')
-                .filter(el => !!el)
-                .map(el => el.trim().toLowerCase());
-        }
-
-        function getComponentTag (instance) {
-            return instance.$options.name ||
-                   instance.$options._componentTag ||
-                   instance.$options.__file ||
-                   '';
-        }
-
-        function filterNodes (root, tags) {
-            const foundComponents = [];
-
-            function walkVueComponentNodes (node, tagIndex, checkFn) {
-                if (checkFn(node, tagIndex)) {
-                    if (tagIndex === tags.length - 1) {
-                        foundComponents.push(node.$el);
-                        return;
-                    }
-
-                    tagIndex++;
+        function walkVueComponentNodes (node, tagIndex, checkFn) {
+            if (checkFn(node, tagIndex)) {
+                if (tagIndex === tags.length - 1) {
+                    foundComponents.push(node.$el);
+                    return;
                 }
 
-                for (let i = 0; i < node.$children.length; i++) {
-                    const childNode = node.$children[i];
-
-                    walkVueComponentNodes(childNode, tagIndex, checkFn);
-                }
+                tagIndex++;
             }
 
-            walkVueComponentNodes(root, 0, (node, tagIndex) => tags[tagIndex] === getComponentTag(node));
+            for (let i = 0; i < node.$children.length; i++) {
+                const childNode = node.$children[i];
 
-            return foundComponents;
+                walkVueComponentNodes(childNode, tagIndex, checkFn);
+            }
         }
 
-        if (!window.Vue)
-            return document.querySelectorAll(complexSelector);
+        walkVueComponentNodes(root, 0, (node, tagIndex) => tags[tagIndex] === getComponentTag(node));
 
-        validateVueVersion();
+        return foundComponents;
+    }
 
-        const rootInstance = findFirstRootInstance();
+    if (!window.Vue)
+        return document.querySelectorAll(complexSelector);
 
-        if (!rootInstance)
-            return null;
+    validateSelector(complexSelector);
+    validateVueVersion();
 
-        if (!complexSelector)
-            return rootInstance.$el;
+    const rootInstance = findFirstRootInstance();
 
-        const componentTags = getComponentTagNames(complexSelector);
+    if (!rootInstance)
+        return null;
 
-        return filterNodes(rootInstance, componentTags);
-    })(selector).addCustomMethods({
-        getVue: (node, fn) => {
-            function getData (instance, prop) {
-                const result = {};
+    if (!complexSelector)
+        return rootInstance.$el;
 
-                Object.keys(prop).forEach(key => {
-                    result[key] = instance[key];
+    const componentTags = getComponentTagNames(complexSelector);
+
+    return filterNodes(rootInstance, componentTags);
+}).addCustomMethods({
+    getVue: (node, fn) => {
+        function getData (instance, prop) {
+            const result = {};
+
+            Object.keys(prop).forEach(key => {
+                result[key] = instance[key];
+            });
+
+
+            return result;
+        }
+
+        function getProps (instance) {
+            return getData(instance, instance.$options.props || {});
+        }
+
+        function getState (instance) {
+            const props   = instance._props || instance.$options.props;
+            const getters = instance.$options.vuex && instance.$options.vuex.getters;
+            const result  = {};
+
+            Object.keys(instance._data)
+                .filter(key => !(props && key in props) && !(getters && key in getters))
+                .forEach(key => {
+                    result[key] = instance._data[key];
                 });
 
-
-                return result;
-            }
-
-            function getProps (instance) {
-                return getData(instance, instance.$options.props || {});
-            }
-
-            function getState (instance) {
-                const props   = instance._props || instance.$options.props;
-                const getters = instance.$options.vuex && instance.$options.vuex.getters;
-                const result  = {};
-
-                Object.keys(instance._data)
-                    .filter(key => !(props && key in props) && !(getters && key in getters))
-                    .forEach(key => {
-                        result[key] = instance._data[key];
-                    });
-
-                return result;
-            }
-
-            function getComputed (instance) {
-                return getData(instance, instance.$options.computed || {});
-            }
-
-            const nodeVue = node.__vue__;
-
-            if (!nodeVue)
-                return null;
-
-            const props    = getProps(nodeVue);
-            const state    = getState(nodeVue);
-            const computed = getComputed(nodeVue);
-
-            if (typeof fn === 'function')
-                return fn({ props, state, computed });
-
-            return { props, state, computed };
+            return result;
         }
-    });
-};
 
+        function getComputed (instance) {
+            return getData(instance, instance.$options.computed || {});
+        }
+
+        const nodeVue = node.__vue__;
+
+        if (!nodeVue)
+            return null;
+
+        const props    = getProps(nodeVue);
+        const state    = getState(nodeVue);
+        const computed = getComputed(nodeVue);
+
+        if (typeof fn === 'function')
+            return fn({ props, state, computed });
+
+        return { props, state, computed };
+    }
+});
