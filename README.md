@@ -94,7 +94,7 @@ In addition to [DOM Node State](http://devexpress.github.io/testcafe/documentati
 
 To get these data, use the Vue selector’s `.getVue()` method.
 
-The `getVue()` method returns a [client function](https://devexpress.github.io/testcafe/documentation/test-api/obtaining-data-from-the-client.html). This function resolves to an object that contains component's properties, state and computed properties.
+The `getVue()` method returns a [client function](https://devexpress.github.io/testcafe/documentation/test-api/obtaining-data-from-the-client.html). This function resolves to an object that contains component properties.
 
 ```js
 const vueComponent      = VueSelector('componentTag');
