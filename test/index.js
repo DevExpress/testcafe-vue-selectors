@@ -35,10 +35,11 @@ test('composite selector', async t => {
 test('should throw exception for non-valid selectors', async t => {
     for (const selector of [null, false, {}, 42]) {
         try {
-            VueSelector(selector);
+            await VueSelector(selector);
+            await t.expect(false).ok('The selector should throw an error but it doesn\'t.');
         }
         catch (e) {
-            await t.expect(e.message).eql(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
+            await t.expect(e.errMsg).contains(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
         }
     }
 });
