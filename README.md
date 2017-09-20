@@ -119,12 +119,13 @@ fixture `TODO list test`
 	.page('http://localhost:1337');
 
 test('Check list item', async t => {
-    const todoItem = VueSelector('todo-item');
+    const todoItem    = VueSelector('todo-item');
+    const todoItemVue = await todoItem.getVue();
 
     await t
-        .expect(todoItem.getVue().props.priority).eql('High')
-        .expect(todoItem.getVue().state.isActive).eql(false)
-        .expect(todoItem.getVue().computed.text).eql('Item 1');
+        .expect(todoItemVue.props.priority).eql('High')
+        .expect(todoItemVue.state.isActive).eql(false)
+        .expect(todoItemVue.computed.text).eql('Item 1');
 });
 ```
 
