@@ -161,6 +161,6 @@ The `.getVue()` method can be called for the VueSelector or the snapshot this se
 
 Only props, state and computed parts of a Vue component are available.
 
-To check if a component can be found, use the [vue-dev-tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) extension for a Google Chrome.
+To check if a component can be found, use the [vue-dev-tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) extension for Google Chrome.
 
 Pages with multiple Vue root nodes are not supported.
