@@ -36,7 +36,7 @@ Suppose you have the following markup.
 </script>
 ```
 
-To get the root Vue instance, use the VueSelector constructor without parameters.
+To get the root Vue node, use the VueSelector constructor without parameters.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -159,8 +159,8 @@ The `.getVue()` method can be called for the VueSelector or the snapshot this se
 #### Limitations
 `testcafe-vue-selectors` support Vue starting with version 2.
 
-Only props, state and computed parts of a Vue component are avalible.
+Only props, state and computed parts of a Vue component are available.
 
 To check if a component can be found, use the [vue-dev-tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) extension for a Google Chrome.
 
-Supported pages only with one Vue root.
+Pages with multiple Vue root nodes are not supported.
