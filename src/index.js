@@ -6,27 +6,37 @@ export default Selector(complexSelector => {
             throw new Error(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
     }
 
-    function validateVueVersion () {
+    function validateVueVersion (rootInstance) {
         const SUPPORTED_VUE_VERSION = 2;
-        const vueVersion            = parseInt(window.Vue.version.split('.')[0], 10);
+        const vueVersion            = parseInt(findVueConstructor(rootInstance).version.split('.')[0], 10);
 
         if (vueVersion < SUPPORTED_VUE_VERSION)
             throw new Error('testcafe-vue-selectors supports Vue version 2.x and newer');
     }
 
+    /*eslint-disable no-unused-vars, no-eval*/
+    function findVueConstructor (rootInstance) {
+        // NOTE: babel converts 'Object.getPrototypeOf' to '(0, _getPrototypeOf2.default)'
+        let Vue = eval('Object.getPrototypeOf(rootInstance)').constructor;
+
+        while (Vue.super)
+            Vue = Vue.super;
+
+        return Vue;
+    }
+    /*eslint-enable no-unused-vars, no-eval*/
+
     function findFirstRootInstance () {
         let instance     = null;
-        const treeWalker = document.createTreeWalker(document, NodeFilter.SHOW_ELEMENT, () => NodeFilter.FILTER_ACCEPT, false);
-        let currentNode  = treeWalker.nextNode();
+        const treeWalker = document.createTreeWalker(
+            document,
+            NodeFilter.SHOW_ELEMENT,
+            () => NodeFilter.FILTER_ACCEPT,
+            false
+        );
 
-        while (currentNode) {
-            instance = currentNode.__vue__;
-
-            if (instance)
-                break;
-
-            currentNode = treeWalker.nextNode();
-        }
+        while (!instance && treeWalker.nextNode())
+            instance = treeWalker.currentNode.__vue__;
 
         return instance;
     }
@@ -70,16 +80,15 @@ export default Selector(complexSelector => {
         return foundComponents;
     }
 
-    if (!window.Vue)
-        return document.querySelectorAll(complexSelector);
 
     validateSelector(complexSelector);
-    validateVueVersion();
 
     const rootInstance = findFirstRootInstance();
 
     if (!rootInstance)
         return null;
+
+    validateVueVersion(rootInstance);
 
     if (!complexSelector)
         return rootInstance.$el;

@@ -1,64 +1,74 @@
 import VueSelector from '../lib';
 import { ClientFunction } from 'testcafe';
 
-fixture `VueSelector`
-    .page('http://localhost:8080/test/data');
+const TEST_PAGES = [
+    {
+        fixtureName: 'VueSelector on simple page',
+        pageUrl:     'http://localhost:8080/test/data/simple-page/',
+    },
+    {
+        fixtureName: 'VueSelector on page with vue-loader',
+        pageUrl:     'http://localhost:8080/test/data/vue-loader/'
+    }
+];
 
-test('root node', async t => {
-    const root    = VueSelector();
-    const rootVue = await root.getVue();
+TEST_PAGES.forEach((testData, index) => {
+    fixture(testData.fixtureName)
+        .page(testData.pageUrl);
 
-    await t.expect(root.exists).ok()
-        .expect(rootVue.state.rootProp1).eql(1);
-});
+    if (index === 0) {
+        test('supported version', async t => {
+            await ClientFunction(() => window.Vue.version = '1.0.28')();
 
-test('selector', async t => {
-    const list    = VueSelector('list');
-    const listVue = await list.getVue();
+            try {
+                await VueSelector();
+            }
+            catch (e) {
+                await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
+            }
+        });
+    }
 
-    await t.expect(list.count).eql(2)
-        .expect(VueSelector('list-item').count).eql(6)
-        .expect(listVue.props.id).eql('list1')
-        .expect(listVue.computed.reversedId).eql('1tsil');
-});
+    test('root node', async t => {
+        const root    = VueSelector();
+        const rootVue = await root.getVue();
 
-test('composite selector', async t => {
-    const listItem       = VueSelector('list list-item');
-    const listItemVue6   = await listItem.nth(5).getVue();
-    const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
+        await t
+            .expect(root.exists).ok()
+            .expect(rootVue.state.rootProp1).eql(1);
+    });
 
-    await t.expect(listItem.count).eql(6)
-        .expect(listItemVue6.props.id).eql('list2-item3')
-        .expect(listItemVue5Id).eql('list2-item2');
-});
+    test('selector', async t => {
+        const list    = VueSelector('list');
+        const listVue = await list.getVue();
 
-test('should throw exception for non-valid selectors', async t => {
-    for (const selector of [null, false, {}, 42]) {
-        try {
-            await VueSelector(selector);
-            await t.expect(false).ok('The selector should throw an error but it doesn\'t.');
+        await t
+            .expect(list.count).eql(2)
+            .expect(VueSelector('list-item').count).eql(6)
+            .expect(listVue.props.id).eql('list1')
+            .expect(listVue.computed.reversedId).eql('1tsil');
+    });
+
+    test('composite selector', async t => {
+        const listItem       = VueSelector('list list-item');
+        const listItemVue6   = await listItem.nth(5).getVue();
+        const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
+
+        await t
+            .expect(listItem.count).eql(6)
+            .expect(listItemVue6.props.id).eql('list2-item3')
+            .expect(listItemVue5Id).eql('list2-item2');
+    });
+
+    test('should throw exception for non-valid selectors', async t => {
+        for (const selector of [null, false, {}, 42]) {
+            try {
+                await VueSelector(selector);
+                await t.expect(false).ok('The selector should throw an error but it doesn\'t.');
+            }
+            catch (e) {
+                await t.expect(e.errMsg).contains(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
+            }
         }
-        catch (e) {
-            await t.expect(e.errMsg).contains(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
-        }
-    }
-});
-
-test('there is no Vue on the tested page', async t => {
-    await ClientFunction(() => window.Vue = null)();
-
-    const body = await VueSelector('body');
-
-    await t.expect(body.tagName).eql('body');
-});
-
-test('supported version', async t => {
-    await ClientFunction(() => window.Vue.version = '1.0.28')();
-
-    try {
-        await VueSelector();
-    }
-    catch (e) {
-        await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
-    }
+    });
 });
