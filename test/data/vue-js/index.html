@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <list id="list1"></list>
+    <list id="list2"></list>
+</div>
+<script>
+    Vue.component('list-item', {
+        props: ['id'],
+        template: '<li :id="id"><p>{{ id }}</p></li>'
+    });
+    Vue.component('list', {
+        props: ['id'],
+        computed: {
+            reversedId: function () {
+                return this.id.split('').reverse().join('');
+            }
+        },
+        methods: {
+            getId: function (postfix) {
+                return this.id + '-item' + postfix;
+            }
+        },
+        template: '<div>' +
+                  '    <ul :id="id">' +
+                  '        <list-item :id="getId(1)"></list-item>' +
+                  '        <list-item :id="getId(2)"></list-item>' +
+                  '        <list-item :id="getId(3)"></list-item>' +
+                  '    </ul>' +
+                  '</div>'
+    });
+    new Vue({
+        el: '#app',
+        data: {
+            rootProp1: 1
+        }
+    });
+</script>
+</body>
+</html>

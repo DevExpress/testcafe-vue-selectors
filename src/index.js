@@ -7,10 +7,10 @@ export default Selector(complexSelector => {
     }
 
     function validateVueVersion (rootInstance) {
-        const SUPPORTED_VUE_VERSION = 2;
-        const vueVersion            = parseInt(findVueConstructor(rootInstance).version.split('.')[0], 10);
+        const MAJOR_SUPPORTED_VUE_VERSION = 2;
+        const vueVersion                  = parseInt(findVueConstructor(rootInstance).version.split('.')[0], 10);
 
-        if (vueVersion < SUPPORTED_VUE_VERSION)
+        if (vueVersion < MAJOR_SUPPORTED_VUE_VERSION)
             throw new Error('testcafe-vue-selectors supports Vue version 2.x and newer');
     }
 

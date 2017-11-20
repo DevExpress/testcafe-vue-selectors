@@ -1,6 +1,6 @@
 {
   "name": "testcafe-vue-selectors",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "VueJS selectors for TestCafe",
   "repository": "https://github.com/DevExpress/testcafe-vue-selectors",
   "author": {
@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "eslint src/index.js test/index.js",
     "test-server": "webpack-dev-server",
-    "testcafe": "testcafe all test/index.js --app \"npm run test-server\" --app-init-delay 3000",
+    "testcafe": "testcafe all test/*.js --app \"npm run test-server\" --app-init-delay 3000",
     "test": "npm run lint && npm run build && npm run testcafe",
     "build": "babel src --out-dir lib",
     "publish-please": "publish-please",
