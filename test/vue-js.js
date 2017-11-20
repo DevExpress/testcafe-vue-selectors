@@ -4,17 +4,6 @@ import { ClientFunction } from 'testcafe';
 fixture `VueSelector`
     .page `http://localhost:8080/test/data/vue-js/`;
 
-test('supported version', async t => {
-    await ClientFunction(() => window.Vue.version = '1.0.28')();
-
-    try {
-        await VueSelector();
-    }
-    catch (e) {
-        await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
-    }
-});
-
 test('root node', async t => {
     const root    = VueSelector();
     const rootVue = await root.getVue();
@@ -55,5 +44,16 @@ test('should throw exception for non-valid selectors', async t => {
         catch (e) {
             await t.expect(e.errMsg).contains(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
         }
+    }
+});
+
+test('supported version', async t => {
+    await ClientFunction(() => window.Vue.version = '1.0.28')();
+
+    try {
+        await VueSelector();
+    }
+    catch (e) {
+        await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
     }
 });
