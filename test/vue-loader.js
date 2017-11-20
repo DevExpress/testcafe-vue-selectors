@@ -1,6 +1,6 @@
 import VueSelector from '../lib';
 
-fixture `VueSelector on page with vue-loader`
+fixture `vue-loader`
     .page `http://localhost:8080/test/data/vue-loader/`;
 
 test('composite selector', async t => {

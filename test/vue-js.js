@@ -1,7 +1,7 @@
 import VueSelector from '../lib';
 import { ClientFunction } from 'testcafe';
 
-fixture `VueSelector`
+fixture `vue-js`
     .page `http://localhost:8080/test/data/vue-js/`;
 
 test('root node', async t => {

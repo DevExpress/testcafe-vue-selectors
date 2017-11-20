@@ -16,7 +16,9 @@ export default Selector(complexSelector => {
 
     /*eslint-disable no-unused-vars, no-eval*/
     function findVueConstructor (rootInstance) {
-        // NOTE: babel converts 'Object.getPrototypeOf' to '(0, _getPrototypeOf2.default)'
+        // NOTE: Testcafe does not support a ClientFunction containing polyfilled functions. See list in
+        // https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-runtime/src/definitions.js.
+        // This is why, we use this hack.
         let Vue = eval('Object.getPrototypeOf(rootInstance)').constructor;
 
         while (Vue.super)
