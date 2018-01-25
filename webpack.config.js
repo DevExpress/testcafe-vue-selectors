@@ -1,11 +1,14 @@
 var path = require('path');
 
 module.exports = {
-    entry: path.resolve(__dirname, './test/data/vue-loader/main.js'),
+    entry: {
+        vueLoader: path.resolve(__dirname, './test/data/vue-loader/main.js'),
+        vueRouter: path.resolve(__dirname, './test/data/vue-router/main.js'),
+    },
 
     output: {
         path:     path.resolve(__dirname, 'dist'),
-        filename: 'build.js'
+        filename: '[name].bundle.js'
     },
 
     module: {
@@ -20,6 +23,12 @@ module.exports = {
                 exclude: /node_modules/
             }
         ]
+    },
+
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        }
     },
 
     devServer: {
