@@ -15,7 +15,7 @@
   "scripts": {
     "lint": "eslint src/index.js test/index.js",
     "test-server": "webpack-dev-server",
-    "testcafe": "testcafe all test/*.js --app \"npm run test-server\" --app-init-delay 3000",
+    "testcafe": "testcafe all test/*.js --app \"npm run test-server\" --app-init-delay 10000",
     "test": "npm run lint && npm run build && npm run testcafe",
     "build": "babel src --out-dir lib",
     "publish-please": "publish-please",
@@ -34,6 +34,7 @@
     "testcafe": "*",
     "vue": "^2.5.4",
     "vue-loader": "^13.5.0",
+    "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.5.4",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
