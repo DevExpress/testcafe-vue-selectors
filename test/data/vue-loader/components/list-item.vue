@@ -4,7 +4,7 @@
 </template>
 <script>
     export default {
-        name:  'list-item',
+        name:  'ListItem',
         props: ['id']
     };
 </script>
