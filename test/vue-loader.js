@@ -4,7 +4,7 @@ fixture `vue-loader`
     .page `http://localhost:8080/test/data/vue-loader/`;
 
 test('composite selector', async t => {
-    const listItem       = VueSelector('list list-item');
+    const listItem       = VueSelector('List ListItem');
     const listItemVue6   = await listItem.nth(5).getVue();
     const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
 

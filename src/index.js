@@ -47,7 +47,7 @@ export default Selector(complexSelector => {
         return componentSelector
             .split(' ')
             .filter(el => !!el)
-            .map(el => el.trim().toLowerCase());
+            .map(el => el.trim());
     }
 
     function getComponentTag (instance) {

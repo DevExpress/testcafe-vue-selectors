@@ -10,7 +10,7 @@
 
     export default {
         components: { ListItem },
-        name:       'list',
+        name:       'List',
         props:      ['id'],
         computed:   {
             reversedId: function () {
