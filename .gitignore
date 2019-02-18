@@ -51,3 +51,4 @@ node_modules/*
 .idea/*
 lib/*
 test/data/lib/*
+package-lock.json
