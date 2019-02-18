@@ -30,7 +30,7 @@
     "eslint": "^3.15.0",
     "eslint-plugin-testcafe": "^0.2.1",
     "prettier": "1.12.1",
-    "publish-please": "^2.2.0",
+    "publish-please": "^5.4.3",
     "pug": "^2.0.0-rc.4",
     "testcafe": "*",
     "vue": "^2.5.4",
