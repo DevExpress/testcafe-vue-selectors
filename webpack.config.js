@@ -1,6 +1,8 @@
-var path = require('path');
+const path = require('path');
 
 module.exports = {
+    mode: 'development',
+
     entry: {
         vueLoader: path.resolve(__dirname, './test/data/vue-loader/main.js'),
         vueRouter: path.resolve(__dirname, './test/data/vue-router/main.js'),

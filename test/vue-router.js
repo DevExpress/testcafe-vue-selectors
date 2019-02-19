@@ -4,7 +4,7 @@ fixture `vue-router`
     .page `http://localhost:8080/test/data/vue-router/`;
 
 
-const routerLinks = VueSelector('router-link');
+const routerLinks = VueSelector('RouterLink');
 
 test('selector', async t => {
     await t

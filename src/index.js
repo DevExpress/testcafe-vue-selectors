@@ -3,7 +3,7 @@ import { Selector } from 'testcafe';
 export default Selector(complexSelector => {
     function validateSelector (selector) {
         if (selector !== void 0 && typeof selector !== 'string')
-            throw new Error(`If the selector parameter is passed it should be a string, but it was ${typeof selector}`);
+            throw new Error('If the selector parameter is passed it should be a string, but it was ' + eval('typeof selector')); // eslint-disable-line no-eval
     }
 
     function validateVueVersion (rootInstance) {

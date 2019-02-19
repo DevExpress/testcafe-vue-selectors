@@ -1,6 +1,10 @@
 {
   "parser": "babel-eslint",
   "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
   "rules": {
     "no-alert": 2,
     "no-array-constructor": 2,
