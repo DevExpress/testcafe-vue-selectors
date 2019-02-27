@@ -7,8 +7,8 @@
 </head>
 <body>
 <div id="app">
-    <list id="list1"></list>
-    <list id="list2"></list>
+    <list id="list1" ref="list1"></list>
+    <list id="list2" ref="list2"></list>
 </div>
 <script>
     Vue.component('list-item', {
@@ -29,9 +29,9 @@
         },
         template: '<div>' +
                   '    <ul :id="id">' +
-                  '        <list-item :id="getId(1)"></list-item>' +
-                  '        <list-item :id="getId(2)"></list-item>' +
-                  '        <list-item :id="getId(3)"></list-item>' +
+                  '        <list-item ref="list-item-1" :id="getId(1)"></list-item>' +
+                  '        <list-item ref="list-item-2" :id="getId(2)"></list-item>' +
+                  '        <list-item ref="list-item-3" :id="getId(3)"></list-item>' +
                   '    </ul>' +
                   '</div>'
     });
