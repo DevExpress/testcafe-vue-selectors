@@ -57,3 +57,35 @@ test('supported version', async t => {
         await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
     }
 });
+
+test('selector with reference', async t => {
+    const list1 = VueSelector('list', 'list1');
+    const list1Vue = await list1.getVue();
+    const list2 = VueSelector('list', 'list2');
+    const list2Vue = await list2.getVue();
+
+    await t
+        .expect(list1.count).eql(1)
+        .expect(list1Vue.props.id).eql('list1')
+        .expect(list1Vue.computed.reversedId).eql('1tsil')
+        .expect(list2.count).eql(1)
+        .expect(list2Vue.props.id).eql('list2')
+        .expect(list2Vue.computed.reversedId).eql('2tsil');
+});
+
+test('selector with root reference', async t => {
+    const list1Items = VueSelector('list-item', false, 'list1');
+
+    await t
+        .expect(list1Items.count).eql(3);
+});
+
+
+test('selector with reference and rootreference', async t => {
+    const list1Item1 = VueSelector('list-item', 'list-item-1', 'list1')
+    const list1Item1Vue = await list1Item1.getVue();
+
+    await t
+        .expect(list1Item1.count).eql(1)
+        .expect(list1Item1Vue.props.id).eql('list1-item1');
+});
