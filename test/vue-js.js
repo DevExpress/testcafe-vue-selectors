@@ -58,6 +58,20 @@ test('supported version', async t => {
     }
 });
 
+test('receive ref of vue element on getVue', async t => {
+    const list = VueSelector('list');
+    
+    await t 
+        .expect(list.count).eql(2);
+    
+    for (let iter = 0; iter < list.count; iter++ ) {
+        const listVue = list.nth(iter).getVue();
+
+        await t
+            .expect(listVue.ref).eql('list' + iter);
+    }
+});
+
 test('selector with reference', async t => {
     const list1 = VueSelector('list', 'list1');
     const list1Vue = await list1.getVue();
@@ -82,10 +96,50 @@ test('selector with root reference', async t => {
 
 
 test('selector with reference and rootreference', async t => {
-    const list1Item1 = VueSelector('list-item', 'list-item-1', 'list1')
+    const list1Item1 = VueSelector('list-item', 'list-item-1', 'list1');
     const list1Item1Vue = await list1Item1.getVue();
 
     await t
         .expect(list1Item1.count).eql(1)
         .expect(list1Item1Vue.props.id).eql('list1-item1');
 });
+
+test('should throw error when non-valid reference', async t => {
+    const selector = 'list';
+
+    for (const reference of [{}, 42]) {
+        try {
+            await VueSelector(selector, reference);
+            await t.expect(false).ok('The reference should throw an error but it doesn\'t.');
+        }
+        catch (e) {
+            await t.expect(e.errMsg).contains(`If the reference parameter is passed it should be a string or false or null, but it was ${typeof reference}`);
+        }
+    }
+});
+
+test('should throw error when non-valid root reference', async t => {
+    const selector = 'list-item';
+    const reference = 'list-item-1';
+
+    for (const rootReference of [{}, 42]) {
+        try {
+            await VueSelector(selector, reference, rootReference);
+            await t.expect(false).ok('The root reference should throw an error but it doesn\'t.');
+        }
+        catch (e) {
+            await t.expect(e.errMsg).contains(`If the root reference parameter is passed it should be a string or false or null, but it was ${typeof rootReference}`);
+        }
+    }
+
+    const rootReference = 'no-list';
+
+    try {
+        await VueSelector(selector, reference, rootReference);
+        await t.expect(false).ok('The root reference should throw an error but it doesn\'t.');
+    }
+    catch (e) {
+        await t.expect(e.errMsg).contains('Invalid reference no-list for root vue element');
+    }
+});
+
