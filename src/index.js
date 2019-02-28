@@ -8,12 +8,12 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
         
         if (reference) {
             if (typeof reference !== 'string')
-                throw new Error('If the reference parameeter is passed it should be a string or false, but it was ' + eval('typeof reference')); // eslint-disable-line no-eval  
+                throw new Error('If the reference parameter is passed it should be a string or false or null, but it was ' + eval('typeof reference')); // eslint-disable-line no-eval  
         }
 
         if (rootReference) {
             if (typeof rootReference !== 'string')
-                throw new Error('If the root reference parameeter is passed it should be a string or false, but it was ' + eval('typeof rootReference')); // eslint-disable-line no-eval  
+                throw new Error('If the root reference parameter is passed it should be a string or false or null, but it was ' + eval('typeof rootReference')); // eslint-disable-line no-eval  
         } 
     }
 
@@ -58,7 +58,7 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
             }
         }      
         if (rootReference && !instance) 
-            throw new Error('Invalid reference' + rootReference + 'for root vue element');
+            throw new Error('Invalid reference ' + rootReference + ' for root vue element');
         
         return instance;
     }
@@ -124,11 +124,17 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
 }).addCustomMethods({
     getVue: (node, fn) => {
         function getData (instance, prop) {
-            const result = {};
-
-            Object.keys(prop).forEach(key => {
-                result[key] = instance[key];
-            });
+            let result = {};
+            
+            if (prop === 'reference') {
+                if (instance.$vnode && instance.$vnode.data)
+                    result = instance.$vnode.data.ref;
+            } 
+            else {
+                Object.keys(prop).forEach(key => {
+                    result[key] = instance[key];
+                });
+            }
 
 
             return result;
@@ -156,6 +162,10 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
             return getData(instance, instance.$options.computed || {});
         }
 
+        function getReference (instance) {
+            return getData(instance, 'reference');   
+        }
+
         const nodeVue = node.__vue__;
 
         if (!nodeVue)
@@ -164,11 +174,12 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
         const props    = getProps(nodeVue);
         const state    = getState(nodeVue);
         const computed = getComputed(nodeVue);
+        const ref = getReference(nodeVue);
 
         if (typeof fn === 'function')
-            return fn({ props, state, computed });
+            return fn({ props, state, computed, ref });
 
-        return { props, state, computed };
+        return { props, state, computed, ref };
     }
 });
 
