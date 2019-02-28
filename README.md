@@ -55,6 +55,30 @@ import VueSelector from 'testcafe-vue-selectors';
 const todoInput = VueSelector('todo-input');
 ```
 
+To obtain a component based vue ref value, pass the ref value as second parameter to the constructor
+
+```js
+import VueSelector from 'testcafe-vue-selectors';
+
+const todoInput = VueSelector('todo-input', 'ref-todo-input1');
+```
+
+To obtain a component within another vue component(root), pass the ref of the root vue component as third parameter to the constructor
+
+```js
+import VueSelector from 'testcafe-vue-selectors';
+
+const todoInput = VueSelector('todo-input', false, 'todo-form-1');
+```
+
+To obtain a component based on ref within another vue component(root), pass the ref of the component as second parametere and ref of the root component as third parameter to the constructor
+
+```js
+import VueSelector from 'testcafe-vue-selectors';
+
+const todoInput = VueSelector('todo-input', 'todo-input-1', 'todo-form-1');
+```
+
 To obtain a nested component, you can use a combined selector.
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -88,9 +112,9 @@ test('Add new task', async t => {
 });
 ```
 
-#### Obtaining component's props, computed and state
+#### Obtaining component's props, computed, state and ref
 
-In addition to [DOM Node State](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed` or `props` of a Vue component.
+In addition to [DOM Node State](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/dom-node-state.html), you can obtain `state`, `computed`, `props` or `ref` of a Vue component.
 
 To get these data, use the Vue selector’s `.getVue()` method.
 
@@ -105,7 +129,8 @@ const vueComponentState = await vueComponent.getVue();
 // {
 //     props:    <component_props>,
 //     state:    <component_state>,
-//     computed: <component_computed>
+//     computed: <component_computed>,
+//     ref:      <component_ref>
 // }
 ```
 
@@ -129,10 +154,10 @@ test('Check list item', async t => {
 });
 ```
 
-As an alternative, the `.getVue()` method can take a function that returns the required property, state or computed property. This function acts as a filter. Its argument is an object returned by `.getVue()`, i.e. `{ props: ..., state: ..., computed: ...}`.
+As an alternative, the `.getVue()` method can take a function that returns the required property, state or computed property. This function acts as a filter. Its argument is an object returned by `.getVue()`, i.e. `{ props: ..., state: ..., computed: ..., ref: ...}`.
 
 ```js
-VueSelector('component').getVue(({ props, state, computed }) => {...});
+VueSelector('component').getVue(({ props, state, computed, ref }) => {...});
 ```
 
 
@@ -149,7 +174,8 @@ test('Check list item', async t => {
     await t
         .expect(todoItem.getVue(({ props }) => props.priority)).eql('High')
         .expect(todoItem.getVue(({ state }) => state.isActive)).eql(false)
-        .expect(todoItem.getVue(({ computed }) => computed.text)).eql('Item 1');
+        .expect(todoItem.getVue(({ computed }) => computed.text)).eql('Item 1')
+        expect(todoItem.getVue(({ ref }) => ref)).eql('ref-item-1');
 });
 
 ```
