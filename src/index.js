@@ -54,11 +54,11 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
                 if (instance && instance.$vnode && instance.$vnode.data.ref === rootReference)
                     continue;
                 else 
-                    instance = false;
+                    instance = null;
             }
         }      
         if (rootReference && !instance) 
-            throw new Error('Invalid reference ' + rootReference + ' for root vue element');
+            throw new Error('Invalid reference ' + rootReference + ' for the root Vue element');
         
         return instance;
     }
@@ -84,12 +84,9 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
         function walkVueComponentNodes (node, tagIndex, tagReference, checkFn) {
             if (checkFn(node, tagIndex)) {
                 if (tagIndex === tags.length - 1) {
-                    if (tagReference) {
-                        if (node.$vnode.data.ref === tagReference)
-                            foundComponents.push(node.$el);
-                    }
-                    else 
-                        foundComponents.push(node.$el);
+                    if (tagReference && node.$vnode.data.ref !== tagReference) 
+                        return;
+                    foundComponents.push(node.$el);
                     return;
                 }
 
@@ -174,7 +171,7 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
         const props    = getProps(nodeVue);
         const state    = getState(nodeVue);
         const computed = getComputed(nodeVue);
-        const ref = getReference(nodeVue);
+        const ref      = getReference(nodeVue);
 
         if (typeof fn === 'function')
             return fn({ props, state, computed, ref });

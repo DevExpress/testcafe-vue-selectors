@@ -59,23 +59,24 @@ test('supported version', async t => {
 });
 
 test('receive ref of vue element on getVue', async t => {
-    const list = VueSelector('list');
+    const list      = VueSelector('list');
+    const listCount = await list.count;
     
     await t 
-        .expect(list.count).eql(2);
+        .expect(listCount).eql(2);
     
-    for (let iter = 0; iter < list.count; iter++ ) {
-        const listVue = list.nth(iter).getVue();
+    for (let i = 0; i < listCount; i++ ) {
+        const listVue =  await list.nth(i).getVue();
 
         await t
-            .expect(listVue.ref).eql('list' + iter);
+            .expect(listVue.ref).eql('list' + (i + 1));
     }
 });
 
 test('selector with reference', async t => {
-    const list1 = VueSelector('list', 'list1');
+    const list1    = VueSelector('list', 'list1');
     const list1Vue = await list1.getVue();
-    const list2 = VueSelector('list', 'list2');
+    const list2    = VueSelector('list', 'list2');
     const list2Vue = await list2.getVue();
 
     await t
@@ -95,8 +96,8 @@ test('selector with root reference', async t => {
 });
 
 
-test('selector with reference and rootreference', async t => {
-    const list1Item1 = VueSelector('list-item', 'list-item-1', 'list1');
+test('selector with reference and root reference', async t => {
+    const list1Item1    = VueSelector('list-item', 'list-item-1', 'list1');
     const list1Item1Vue = await list1Item1.getVue();
 
     await t
@@ -119,7 +120,7 @@ test('should throw error when non-valid reference', async t => {
 });
 
 test('should throw error when non-valid root reference', async t => {
-    const selector = 'list-item';
+    const selector  = 'list-item';
     const reference = 'list-item-1';
 
     for (const rootReference of [{}, 42]) {
@@ -139,7 +140,7 @@ test('should throw error when non-valid root reference', async t => {
         await t.expect(false).ok('The root reference should throw an error but it doesn\'t.');
     }
     catch (e) {
-        await t.expect(e.errMsg).contains('Invalid reference no-list for root vue element');
+        await t.expect(e.errMsg).contains('Invalid reference no-list for the root Vue element');
     }
 });
 

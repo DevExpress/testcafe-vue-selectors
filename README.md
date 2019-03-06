@@ -55,7 +55,7 @@ import VueSelector from 'testcafe-vue-selectors';
 const todoInput = VueSelector('todo-input');
 ```
 
-To obtain a component based vue ref value, pass the ref value as second parameter to the constructor
+To obtain a component based vue `ref` value, pass the `ref` value as second parameter to the VueSelector constructor
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -63,7 +63,7 @@ import VueSelector from 'testcafe-vue-selectors';
 const todoInput = VueSelector('todo-input', 'ref-todo-input1');
 ```
 
-To obtain a component within another vue component(root), pass the ref of the root vue component as third parameter to the constructor
+To obtain a component within another Vue component (root), pass the `ref` of the root Vue component as a third parameter to the VueSelector constructor.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -71,7 +71,7 @@ import VueSelector from 'testcafe-vue-selectors';
 const todoInput = VueSelector('todo-input', false, 'todo-form-1');
 ```
 
-To obtain a component based on ref within another vue component(root), pass the ref of the component as second parametere and ref of the root component as third parameter to the constructor
+To obtain a component based on `ref` within another Vue component (root), pass the `ref` of the component as a second parameter and `ref` of the root component as a third parameter to the VueSelector constructor.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -175,7 +175,7 @@ test('Check list item', async t => {
         .expect(todoItem.getVue(({ props }) => props.priority)).eql('High')
         .expect(todoItem.getVue(({ state }) => state.isActive)).eql(false)
         .expect(todoItem.getVue(({ computed }) => computed.text)).eql('Item 1')
-        expect(todoItem.getVue(({ ref }) => ref)).eql('ref-item-1');
+        .expect(todoItem.getVue(({ ref }) => ref)).eql('ref-item-1');
 });
 
 ```
