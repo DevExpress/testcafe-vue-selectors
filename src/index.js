@@ -11,10 +11,8 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
                 throw new Error('If the reference parameter is passed it should be a string or false or null, but it was ' + eval('typeof reference')); // eslint-disable-line no-eval  
         }
 
-        if (rootReference) {
-            if (typeof rootReference !== 'string')
-                throw new Error('If the root reference parameter is passed it should be a string or false or null, but it was ' + eval('typeof rootReference')); // eslint-disable-line no-eval  
-        } 
+        if (rootReference !== void 0 && typeof rootReference !== 'string')
+            throw new Error('If the root reference parameter is passed it should be a string or false or null, but it was ' + eval('typeof rootReference')); // eslint-disable-line no-eval  
     }
 
     function validateVueVersion (rootInstance) {
