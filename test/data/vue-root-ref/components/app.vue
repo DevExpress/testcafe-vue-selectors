@@ -1,4 +1,4 @@
-<template lang="pug">
+<template lang='pug'>
     #app
         h2 Cricket Players
         app-table(ref='table-1' :data='cricketPlayers')
@@ -7,24 +7,24 @@
 </template>
 
 <script>
-    import AppTable from "./table.vue";
+    import AppTable from './table.vue';
 
     export default {
-        name: "App",
+        name: 'App',
         components: {
             AppTable
         },
         data() {
             return {
                 cricketPlayers: [
-                    { name: "Sachin", email: "sachintendulkar@cricket.com" },
-                    { name: "Yuvraj", email: "yuvrajsingh@cricket.com" },
-                    { name: "Rahul", email: "rahuldravid@cricket.com" }
+                    { name: 'Sachin', email: 'sachintendulkar@cricket.com' },
+                    { name: 'Yuvraj', email: 'yuvrajsingh@cricket.com' },
+                    { name: 'Rahul', email: 'rahuldravid@cricket.com' }
                 ],
                 footballPlayers: [
-                    { name: "Messi", email: "lionelmessi@football.com" },
-                    { name: "Ronaldo", email: "cristianoronaldo@football.com" },
-                    { name: "David", email: "davidbeckham@football.com" }
+                    { name: 'Messi', email: 'lionelmessi@football.com' },
+                    { name: 'Ronaldo', email: 'cristianoronaldo@football.com' },
+                    { name: 'David', email: 'davidbeckham@football.com' }
                 ]
             };
         }
@@ -33,7 +33,7 @@
 
 <style>
     #app {
-        font-family: "Avenir", Helvetica, Arial, sans-serif;
+        font-family: 'Avenir', Helvetica, Arial, sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
