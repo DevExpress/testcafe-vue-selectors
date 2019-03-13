@@ -35,6 +35,119 @@ test('composite selector', async t => {
         .expect(listItemVue5Id).eql('list2-item2');
 });
 
+
+test('VueSelector(\'ref:component\')', async t => {
+    const list1    = VueSelector('list-1:list');
+    const list1Vue = await list1.getVue();
+    const list2    = VueSelector('list-2:list');
+    const list2Vue = await list2.getVue();
+
+    await t
+        .expect(list1.count).eql(1)
+        .expect(list1Vue.ref).eql('list-1')
+        .expect(list1Vue.props.id).eql('list1')
+        .expect(list1Vue.computed.reversedId).eql('1tsil')
+        .expect(list2.count).eql(1)
+        .expect(list2Vue.ref).eql('list-2')
+        .expect(list2Vue.props.id).eql('list2')
+        .expect(list2Vue.computed.reversedId).eql('2tsil');
+});
+
+
+test('composite VueSelector(\'parent-ref:parent-component child-component\')', async t => {
+    const list1Items    = VueSelector('list-1:list list-item');
+    const list1Item1Vue = await list1Items.nth(0).getVue();
+    const list1Item2Vue = await list1Items.nth(1).getVue();
+    const list1Item3Vue = await list1Items.nth(2).getVue();
+    const list2Items    = VueSelector('list-2:list list-item');
+    const list2Item1Vue = await list2Items.nth(0).getVue();
+    const list2Item2Vue = await list2Items.nth(1).getVue();
+    const list2Item3Vue = await list2Items.nth(2).getVue();
+
+    await t
+        .expect(list1Items.count).eql(3)
+        .expect(list1Item1Vue.ref).eql('list-item-1')
+        .expect(list1Item1Vue.props.id).eql('list1-item1')
+        .expect(list1Item2Vue.ref).eql('list-item-2')
+        .expect(list1Item2Vue.props.id).eql('list1-item2')
+        .expect(list1Item3Vue.ref).eql('list-item-3')
+        .expect(list1Item3Vue.props.id).eql('list1-item3')
+        .expect(list2Items.count).eql(3)
+        .expect(list2Item1Vue.ref).eql('list-item-1')
+        .expect(list2Item1Vue.props.id).eql('list2-item1')
+        .expect(list2Item2Vue.ref).eql('list-item-2')
+        .expect(list2Item2Vue.props.id).eql('list2-item2')
+        .expect(list2Item3Vue.ref).eql('list-item-3')
+        .expect(list2Item3Vue.props.id).eql('list2-item3');
+});
+
+test('composite VueSelector(\'parent-component child-ref:child-component\')', async t => {
+    const listItems1 = VueSelector('list list-item-1:list-item');  
+    const listItems2 = VueSelector('list list-item-2:list-item');
+    const listItems3 = VueSelector('list list-item-3:list-item');
+    const list1Item1 = await listItems1.nth(0).getVue();
+    const list2Item1 = await listItems1.nth(1).getVue();
+    const list1Item2 = await listItems2.nth(0).getVue();
+    const list2Item2 = await listItems2.nth(1).getVue();
+    const list1Item3 = await listItems3.nth(0).getVue();
+    const list2Item3 = await listItems3.nth(1).getVue();
+
+
+    await t
+        .expect(listItems1.count).eql(2)
+        .expect(list1Item1.ref).eql('list-item-1')
+        .expect(list1Item1.props.id).eql('list1-item1')
+        .expect(list2Item1.ref).eql('list-item-1')
+        .expect(list2Item1.props.id).eql('list2-item1')
+        .expect(listItems2.count).eql(2)
+        .expect(list1Item2.ref).eql('list-item-2')
+        .expect(list1Item2.props.id).eql('list1-item2')
+        .expect(list2Item2.ref).eql('list-item-2')
+        .expect(list2Item2.props.id).eql('list2-item2')
+        .expect(listItems3.count).eql(2)
+        .expect(list1Item3.ref).eql('list-item-3')
+        .expect(list1Item3.props.id).eql('list1-item3')
+        .expect(list2Item3.ref).eql('list-item-3')
+        .expect(list2Item3.props.id).eql('list2-item3');
+});
+
+test('composite VueSelector(\'parent-ref:parent-component child-ref:child-component\')', async t => {
+    const list1Item1 = VueSelector('list-1:list list-item-1:list-item');  
+    const list1Item2 = VueSelector('list-1:list list-item-2:list-item');
+    const list1Item3 = VueSelector('list-1:list list-item-3:list-item');
+    const list2Item1 = VueSelector('list-2:list list-item-1:list-item');  
+    const list2Item2 = VueSelector('list-2:list list-item-2:list-item');
+    const list2Item3 = VueSelector('list-2:list list-item-3:list-item');
+    const list1Item1Vue = await list1Item1.getVue();
+    const list1Item2Vue = await list1Item2.getVue();
+    const list1Item3Vue = await list1Item3.getVue();
+    const list2Item1Vue = await list2Item1.getVue();
+    const list2Item2Vue = await list2Item2.getVue();
+    const list2Item3Vue = await list2Item3.getVue();
+
+
+    await t
+        .expect(list1Item1.count).eql(1)
+        .expect(list1Item1Vue.ref).eql('list-item-1')
+        .expect(list1Item1Vue.props.id).eql('list1-item1')
+        .expect(list1Item2.count).eql(1)
+        .expect(list1Item2Vue.ref).eql('list-item-2')
+        .expect(list1Item2Vue.props.id).eql('list1-item2')
+        .expect(list1Item3.count).eql(1)
+        .expect(list1Item3Vue.ref).eql('list-item-3')
+        .expect(list1Item3Vue.props.id).eql('list1-item3')
+        .expect(list2Item1.count).eql(1)
+        .expect(list2Item1Vue.ref).eql('list-item-1')
+        .expect(list2Item1Vue.props.id).eql('list2-item1')
+        .expect(list2Item2.count).eql(1)
+        .expect(list2Item2Vue.ref).eql('list-item-2')
+        .expect(list2Item2Vue.props.id).eql('list2-item2')
+        .expect(list2Item3.count).eql(1)
+        .expect(list2Item3Vue.ref).eql('list-item-3')
+        .expect(list2Item3Vue.props.id).eql('list2-item3');
+});
+
+
 test('should throw exception for non-valid selectors', async t => {
     for (const selector of [null, false, {}, 42]) {
         try {
@@ -57,90 +170,3 @@ test('supported version', async t => {
         await t.expect(e.errMsg).contains('testcafe-vue-selectors supports Vue version 2.x and newer');
     }
 });
-
-test('receive ref of vue element on getVue', async t => {
-    const list      = VueSelector('list');
-    const listCount = await list.count;
-    
-    await t 
-        .expect(listCount).eql(2);
-    
-    for (let i = 0; i < listCount; i++ ) {
-        const listVue =  await list.nth(i).getVue();
-
-        await t
-            .expect(listVue.ref).eql('list' + (i + 1));
-    }
-});
-
-test('selector with reference', async t => {
-    const list1    = VueSelector('list', 'list1');
-    const list1Vue = await list1.getVue();
-    const list2    = VueSelector('list', 'list2');
-    const list2Vue = await list2.getVue();
-
-    await t
-        .expect(list1.count).eql(1)
-        .expect(list1Vue.props.id).eql('list1')
-        .expect(list1Vue.computed.reversedId).eql('1tsil')
-        .expect(list2.count).eql(1)
-        .expect(list2Vue.props.id).eql('list2')
-        .expect(list2Vue.computed.reversedId).eql('2tsil');
-});
-
-test('selector with root reference', async t => {
-    const list1Items = VueSelector('list-item', false, 'list1');
-
-    await t
-        .expect(list1Items.count).eql(3);
-});
-
-
-test('selector with reference and root reference', async t => {
-    const list1Item1    = VueSelector('list-item', 'list-item-1', 'list1');
-    const list1Item1Vue = await list1Item1.getVue();
-
-    await t
-        .expect(list1Item1.count).eql(1)
-        .expect(list1Item1Vue.props.id).eql('list1-item1');
-});
-
-test('should throw error when non-valid reference', async t => {
-    const selector = 'list';
-
-    for (const reference of [{}, 42]) {
-        try {
-            await VueSelector(selector, reference);
-            await t.expect(false).ok('The reference should throw an error but it doesn\'t.');
-        }
-        catch (e) {
-            await t.expect(e.errMsg).contains(`If the reference parameter is passed it should be a string or false or null, but it was ${typeof reference}`);
-        }
-    }
-});
-
-test('should throw error when non-valid root reference', async t => {
-    const selector  = 'list-item';
-    const reference = 'list-item-1';
-
-    for (const rootReference of [{}, 42]) {
-        try {
-            await VueSelector(selector, reference, rootReference);
-            await t.expect(false).ok('The root reference should throw an error but it doesn\'t.');
-        }
-        catch (e) {
-            await t.expect(e.errMsg).contains(`If the root reference parameter is passed it should be a string or false or null, but it was ${typeof rootReference}`);
-        }
-    }
-
-    const rootReference = 'no-list';
-
-    try {
-        await VueSelector(selector, reference, rootReference);
-        await t.expect(false).ok('The root reference should throw an error but it doesn\'t.');
-    }
-    catch (e) {
-        await t.expect(e.errMsg).contains('Invalid reference no-list for the root Vue element');
-    }
-});
-
