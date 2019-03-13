@@ -112,12 +112,12 @@ test('composite VueSelector(\'parent-component child-ref:child-component\')', as
 });
 
 test('composite VueSelector(\'parent-ref:parent-component child-ref:child-component\')', async t => {
-    const list1Item1 = VueSelector('list-1:list list-item-1:list-item');  
-    const list1Item2 = VueSelector('list-1:list list-item-2:list-item');
-    const list1Item3 = VueSelector('list-1:list list-item-3:list-item');
-    const list2Item1 = VueSelector('list-2:list list-item-1:list-item');  
-    const list2Item2 = VueSelector('list-2:list list-item-2:list-item');
-    const list2Item3 = VueSelector('list-2:list list-item-3:list-item');
+    const list1Item1    = VueSelector('list-1:list list-item-1:list-item');  
+    const list1Item2    = VueSelector('list-1:list list-item-2:list-item');
+    const list1Item3    = VueSelector('list-1:list list-item-3:list-item');
+    const list2Item1    = VueSelector('list-2:list list-item-1:list-item');  
+    const list2Item2    = VueSelector('list-2:list list-item-2:list-item');
+    const list2Item3    = VueSelector('list-2:list list-item-3:list-item');
     const list1Item1Vue = await list1Item1.getVue();
     const list1Item2Vue = await list1Item2.getVue();
     const list1Item3Vue = await list1Item3.getVue();
