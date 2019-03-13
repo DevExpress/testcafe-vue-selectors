@@ -17,10 +17,10 @@ Suppose you have the following markup.
 
 ```html
 <div id="todo-app">
-    <todo-input />
-    <todo-list>
-        <todo-item priority="High">Item 1</todo-item>
-        <todo-item priority="Low">Item 2</todo-item>
+    <todo-input ref="ref-todo-input-1"/>
+    <todo-list ref="ref-todo-list-1">
+        <todo-item ref="ref-todo-item-1" priority="High">Item 1</todo-item>
+        <todo-item ref="ref-todo-item-2" priority="Low">Item 2</todo-item>
     </todo-list>   
     <div className="items-count">Items count: <span>{{itemCount}}</span></div>
 </div>
@@ -55,35 +55,21 @@ import VueSelector from 'testcafe-vue-selectors';
 const todoInput = VueSelector('todo-input');
 ```
 
-To obtain a component based vue `ref` value, pass the `ref` value as second parameter to the VueSelector constructor
+To obtain a component based vue `ref` value, prepend `:ref` value to the component name and pass it to the VueSelector constructor.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
-const todoInput = VueSelector('todo-input', 'ref-todo-input1');
-```
-
-To obtain a component within another Vue component (root), pass the `ref` of the root Vue component as a third parameter to the VueSelector constructor.
-
-```js
-import VueSelector from 'testcafe-vue-selectors';
-
-const todoInput = VueSelector('todo-input', false, 'todo-form-1');
-```
-
-To obtain a component based on `ref` within another Vue component (root), pass the `ref` of the component as a second parameter and `ref` of the root component as a third parameter to the VueSelector constructor.
-
-```js
-import VueSelector from 'testcafe-vue-selectors';
-
-const todoInput = VueSelector('todo-input', 'todo-input-1', 'todo-form-1');
+const todoInput = VueSelector('ref-todo-item-1:todo-item');
 ```
 
 To obtain a nested component, you can use a combined selector.
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
-const todoItem = VueSelector('todo-list todo-item');
+const todoItem       = VueSelector('todo-list todo-item');
+const todoItem1      = VueSelector('todo-list ref-todo-item-2:todo-item')
+const todoList1Item1 = VueSelector('ref-todo-list-1:todo-list ref-todo-item-1:todo-item')
 ```
 
 You can combine Vue selectors with testcafe `Selector` filter functions like `.find`, `.withText`, `.nth` and [other](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/selectors.html#functional-style-selectors).
