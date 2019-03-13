@@ -43,31 +43,31 @@ export default Selector(complexSelector => {
         return instance;
     }
 
-    function getComponentTagNames (componentSelector) {
-        const test = componentSelector
+    function getSelectors (componentSelector) {
+        const selectors = componentSelector
             .split(' ')
             .filter(el => !!el)
             .map(el => el.trim());
 
         const tagNameAndRefArray = [];
 
-        for (let i = 0; i < test.length; i++) {
-            const refAndElement = test[i].split(':')
+        for (let i = 0; i < selectors.length; i++) {
+            const refAndTag = selectors[i].split(':')
                 .filter(el => !!el)
                 .map(el => el.trim());
             let ref = null;
-            let element = null;
+            let tag = null;
 
-            if (refAndElement.length === 2) {
-                ref = refAndElement[0];
-                element = refAndElement[1];
+            if (refAndTag.length === 2) {
+                ref = refAndTag[0];
+                tag = refAndTag[1];
             } 
             else 
-                element = refAndElement[0];
+                tag = refAndTag[0];
 
             tagNameAndRefArray.push({
                 ref,
-                element
+                tag
             });
         }
         return tagNameAndRefArray;
@@ -80,27 +80,27 @@ export default Selector(complexSelector => {
                '';
     }
 
-    function filterNodes (root, tags) {
+    function filterNodes (root, selectors) {
         const foundComponents = [];
 
-        function walkVueComponentNodes (node, tagIndex, checkFn) {
-            if (checkFn(node, tagIndex)) {
-                if (tagIndex === tags.length - 1) {
+        function walkVueComponentNodes (node, selectorIndex, checkFn) {
+            if (checkFn(node, selectorIndex)) {
+                if (selectorIndex === selectors.length - 1) {
                     foundComponents.push(node.$el);
                     return;
                 }
 
-                tagIndex++;
+                selectorIndex++;
             }
 
             for (let i = 0; i < node.$children.length; i++) {
                 const childNode = node.$children[i];
 
-                walkVueComponentNodes(childNode, tagIndex, checkFn);
+                walkVueComponentNodes(childNode, selectorIndex, checkFn);
             }
         }
 
-        walkVueComponentNodes(root, 0, (node, tagIndex) => tags[tagIndex] && tags[tagIndex].element === getComponentTag(node) && (!tags[tagIndex].ref || tags[tagIndex].ref === node.$vnode.data.ref));
+        walkVueComponentNodes(root, 0, (node, selectorIndex) => selectors[selectorIndex] && selectors[selectorIndex].tag === getComponentTag(node) && (!selectors[selectorIndex].ref || selectors[selectorIndex].ref === node.$vnode.data.ref));
 
 
         return foundComponents;
@@ -119,9 +119,9 @@ export default Selector(complexSelector => {
     if (!complexSelector)
         return rootInstance.$el;
 
-    const componentTags = getComponentTagNames(complexSelector);
+    const selectors = getSelectors(complexSelector);
 
-    return filterNodes(rootInstance, componentTags);
+    return filterNodes(rootInstance, selectors);
 }).addCustomMethods({
     getVue: (node, fn) => {
         function getData (instance, prop) {
