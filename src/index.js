@@ -1,18 +1,9 @@
 import { Selector } from 'testcafe';
 
-export default Selector((vueSelector, vueReference, rootElementReference) => {
-
-    function validateParameters (selector, reference, rootReference) {
+export default Selector(complexSelector => {
+    function validateSelector (selector) {
         if (selector !== void 0 && typeof selector !== 'string')
             throw new Error('If the selector parameter is passed it should be a string, but it was ' + eval('typeof selector')); // eslint-disable-line no-eval
-        
-        if (reference) {
-            if (typeof reference !== 'string')
-                throw new Error('If the reference parameter is passed it should be a string or false or null, but it was ' + eval('typeof reference')); // eslint-disable-line no-eval  
-        }
-
-        if (rootReference !== void 0 && typeof rootReference !== 'string')
-            throw new Error('If the root reference parameter is passed it should be a string or false or null, but it was ' + eval('typeof rootReference')); // eslint-disable-line no-eval  
     }
 
     function validateVueVersion (rootInstance) {
@@ -37,7 +28,7 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
     }
     /*eslint-enable no-unused-vars, no-eval*/
 
-    function findFirstRootInstance (rootReference) {
+    function findFirstRootInstance () {
         let instance     = null;
         const treeWalker = document.createTreeWalker(
             document,
@@ -46,76 +37,91 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
             false
         );
 
-        while (!instance && treeWalker.nextNode()) {
+        while (!instance && treeWalker.nextNode())
             instance = treeWalker.currentNode.__vue__;
-            if (rootReference) {
-                if (instance && instance.$vnode && instance.$vnode.data.ref === rootReference)
-                    continue;
-                else 
-                    instance = null;
-            }
-        }      
-        if (rootReference && !instance) 
-            throw new Error('Invalid reference ' + rootReference + ' for the root Vue element');
-        
+
         return instance;
     }
 
     function getComponentTagNames (componentSelector) {
-        return componentSelector
+        const test = componentSelector
             .split(' ')
             .filter(el => !!el)
             .map(el => el.trim());
+
+        const tagNameAndRefArray = [];
+
+        for (let i = 0; i < test.length; i++) {
+            const refAndElement = test[i].split(':')
+                .filter(el => !!el)
+                .map(el => el.trim());
+            let ref = null;
+            let element = null;
+
+            if (refAndElement.length === 2) {
+                ref = refAndElement[0];
+                element = refAndElement[1];
+            } 
+            else 
+                element = refAndElement[0];
+
+            tagNameAndRefArray.push({
+                ref,
+                element
+            });
+        }
+        return tagNameAndRefArray;
     }
 
     function getComponentTag (instance) {
-
         return instance.$options.name ||
                instance.$options._componentTag ||
                instance.$options.__file ||
                '';
     }
 
-    function filterNodes (root, tags, ref) {
+    function filterNodes (root, tags) {
         const foundComponents = [];
 
-        function walkVueComponentNodes (node, tagIndex, tagReference, checkFn) {
+        function walkVueComponentNodes (node, tagIndex, checkFn) {
             if (checkFn(node, tagIndex)) {
                 if (tagIndex === tags.length - 1) {
-                    if (tagReference && node.$vnode.data.ref !== tagReference) 
-                        return;
                     foundComponents.push(node.$el);
                     return;
                 }
 
                 tagIndex++;
             }
+
             for (let i = 0; i < node.$children.length; i++) {
                 const childNode = node.$children[i];
 
-                walkVueComponentNodes(childNode, tagIndex, tagReference, checkFn);
+                walkVueComponentNodes(childNode, tagIndex, checkFn);
             }
         }
 
-        walkVueComponentNodes(root, 0, ref, (node, tagIndex) => tags[tagIndex] === getComponentTag(node));
+        walkVueComponentNodes(root, 0, (node, tagIndex) => tags[tagIndex] && tags[tagIndex].element === getComponentTag(node) && (!tags[tagIndex].ref || tags[tagIndex].ref === node.$vnode.data.ref));
+
+
         return foundComponents;
     }
 
-    validateParameters(vueSelector, vueReference, rootElementReference);
 
-    const rootInstance = findFirstRootInstance(rootElementReference);
+    validateSelector(complexSelector);
+
+    const rootInstance = findFirstRootInstance();
 
     if (!rootInstance)
         return null;
 
     validateVueVersion(rootInstance);
 
-    if (!vueSelector)
+    if (!complexSelector)
         return rootInstance.$el;
 
-    const componentTags = getComponentTagNames(vueSelector);
+    const componentTags = getComponentTagNames(complexSelector);
 
-    return filterNodes(rootInstance, componentTags, vueReference); 
+    return filterNodes(rootInstance, componentTags);
 }).addCustomMethods({
     getVue: (node, fn) => {
         function getData (instance, prop) {
@@ -177,4 +183,3 @@ export default Selector((vueSelector, vueReference, rootElementReference) => {
         return { props, state, computed, ref };
     }
 });
-
