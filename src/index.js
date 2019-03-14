@@ -57,6 +57,23 @@ export default Selector(complexSelector => {
                '';
     }
 
+    function isRef (selector) {
+        return selector.indexOf('ref:') !== -1;
+    }
+
+    function getRef (selector) {
+        if (selector.indexOf('ref:') === 0 && selector.split('ref:')[1])
+            return selector.split('ref:')[1];
+
+        throw new Error('If the ref is passed as selector it should be in the format \'ref:ref-selector\'');
+    }
+
+    function getRefOfNode (node) {
+        if (node.$vnode && node.$vnode.data)
+            return node.$vnode.data.ref;
+        return null;
+    }
+
     function filterNodes (root, tags) {
         const foundComponents = [];
 
@@ -78,11 +95,11 @@ export default Selector(complexSelector => {
         }
 
         walkVueComponentNodes(root, 0, (node, tagIndex) => {
-            if (tags[tagIndex].indexOf('ref:') !== -1) {
-                const ref = tags[tagIndex].split('ref:')[1];
-
-                return node.$vnode && node.$vnode.data && ref === node.$vnode.data.ref;
-            } 
+            if (isRef(tags[tagIndex])) {       
+                const ref = getRef(tags[tagIndex]);
+                
+                return ref === getRefOfNode(node);
+            }
             return tags[tagIndex] === getComponentTag(node);
         });
         return foundComponents;
@@ -107,17 +124,11 @@ export default Selector(complexSelector => {
 }).addCustomMethods({
     getVue: (node, fn) => {
         function getData (instance, prop) {
-            let result = {};
-            
-            if (prop === 'reference') {
-                if (instance.$vnode && instance.$vnode.data)
-                    result = instance.$vnode.data.ref;
-            } 
-            else {
-                Object.keys(prop).forEach(key => {
-                    result[key] = instance[key];
-                });
-            }
+            const result = {};
+
+            Object.keys(prop).forEach(key => {
+                result[key] = instance[key];
+            });
 
 
             return result;
@@ -145,8 +156,8 @@ export default Selector(complexSelector => {
             return getData(instance, instance.$options.computed || {});
         }
 
-        function getReference (instance) {
-            return getData(instance, 'reference');   
+        function getComponentReference (instance) {
+            return instance.$vnode && instance.$vnode.data && instance.$vnode.data.ref;   
         }
 
         const nodeVue = node.__vue__;
@@ -157,7 +168,7 @@ export default Selector(complexSelector => {
         const props    = getProps(nodeVue);
         const state    = getState(nodeVue);
         const computed = getComputed(nodeVue);
-        const ref      = getReference(nodeVue);
+        const ref      = getComponentReference(nodeVue);
 
         if (typeof fn === 'function')
             return fn({ props, state, computed, ref });

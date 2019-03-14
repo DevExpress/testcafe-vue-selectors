@@ -144,6 +144,19 @@ test('VueSelector(\'ref:list-n ref:list-item-n\')', async t => {
         .expect(list2Item3Vue.props.id).eql('list2-item3');
 });
 
+test('should throw exception for non-valid ref-selectors', async t => {
+    for (const selector of ['ref:', 'list ref:', 'listref:list-1']) {
+        try {
+            await VueSelector(selector);
+            await t.expect(false).ok('The selector should throw an error but it doesn\'t.');
+        }
+        catch (e) {
+            await t
+            .expect(e.errMsg).contains('If the ref is passed as selector it should be in the format \'ref:ref-selector\'');
+        }
+    }
+});
+
 test('should throw exception for non-valid selectors', async t => {
     for (const selector of [null, false, {}, 42]) {
         try {
