@@ -55,21 +55,23 @@ import VueSelector from 'testcafe-vue-selectors';
 const todoInput = VueSelector('todo-input');
 ```
 
-To obtain a component based vue `ref` value, prepend `:ref` value to the component name and pass it to the VueSelector constructor.
+To obtain a component based on vue `ref` value, pass the `ref` value prepended with `ref:` to the VueSelector constructor.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
-const todoInput = VueSelector('ref-todo-item-1:todo-item');
+const todoInput = VueSelector('ref:ref-todo-item-1');
 ```
 
 To obtain a nested component, you can use a combined selector.
+
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
 const todoItem       = VueSelector('todo-list todo-item');
-const todoItem1      = VueSelector('todo-list ref-todo-item-2:todo-item')
-const todoList1Item1 = VueSelector('ref-todo-list-1:todo-list ref-todo-item-1:todo-item')
+const todoList1Items = VueSelector('ref:todo-list-1 todo-item');
+const todoItem1      = VueSelector('todo-list ref:ref-todo-item-1');
+const todoList1Item1 = VueSelector('ref:ref-todo-list-1 ref:ref-todo-item-1');
 ```
 
 You can combine Vue selectors with testcafe `Selector` filter functions like `.find`, `.withText`, `.nth` and [other](http://devexpress.github.io/testcafe/documentation/test-api/selecting-page-elements/selectors.html#functional-style-selectors).

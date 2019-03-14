@@ -43,34 +43,11 @@ export default Selector(complexSelector => {
         return instance;
     }
 
-    function getSelectors (componentSelector) {
-        const selectors = componentSelector
+    function getComponentTagNames (componentSelector) {
+        return componentSelector
             .split(' ')
             .filter(el => !!el)
             .map(el => el.trim());
-
-        const tagNameAndRefArray = [];
-
-        for (let i = 0; i < selectors.length; i++) {
-            const refAndTag = selectors[i].split(':')
-                .filter(el => !!el)
-                .map(el => el.trim());
-            let ref = null;
-            let tag = null;
-
-            if (refAndTag.length === 2) {
-                ref = refAndTag[0];
-                tag = refAndTag[1];
-            } 
-            else 
-                tag = refAndTag[0];
-
-            tagNameAndRefArray.push({
-                ref,
-                tag
-            });
-        }
-        return tagNameAndRefArray;
     }
 
     function getComponentTag (instance) {
@@ -80,29 +57,34 @@ export default Selector(complexSelector => {
                '';
     }
 
-    function filterNodes (root, selectors) {
+    function filterNodes (root, tags) {
         const foundComponents = [];
 
-        function walkVueComponentNodes (node, selectorIndex, checkFn) {
-            if (checkFn(node, selectorIndex)) {
-                if (selectorIndex === selectors.length - 1) {
+        function walkVueComponentNodes (node, tagIndex, checkFn) {
+            if (checkFn(node, tagIndex)) {
+                if (tagIndex === tags.length - 1) {
                     foundComponents.push(node.$el);
                     return;
                 }
 
-                selectorIndex++;
+                tagIndex++;
             }
 
             for (let i = 0; i < node.$children.length; i++) {
                 const childNode = node.$children[i];
 
-                walkVueComponentNodes(childNode, selectorIndex, checkFn);
+                walkVueComponentNodes(childNode, tagIndex, checkFn);
             }
         }
 
-        walkVueComponentNodes(root, 0, (node, selectorIndex) => selectors[selectorIndex] && selectors[selectorIndex].tag === getComponentTag(node) && (!selectors[selectorIndex].ref || selectors[selectorIndex].ref === node.$vnode.data.ref));
+        walkVueComponentNodes(root, 0, (node, tagIndex) => {
+            if (tags[tagIndex].includes('ref:')) {
+                const ref = tags[tagIndex].split('ref:')[1];
 
-
+                return node.$vnode && node.$vnode.data && ref === node.$vnode.data.ref;
+            } 
+            return tags[tagIndex] === getComponentTag(node);
+        });
         return foundComponents;
     }
 
@@ -119,9 +101,9 @@ export default Selector(complexSelector => {
     if (!complexSelector)
         return rootInstance.$el;
 
-    const selectors = getSelectors(complexSelector);
+    const componentTags = getComponentTagNames(complexSelector);
 
-    return filterNodes(rootInstance, selectors);
+    return filterNodes(rootInstance, componentTags);
 }).addCustomMethods({
     getVue: (node, fn) => {
         function getData (instance, prop) {
