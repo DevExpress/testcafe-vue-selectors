@@ -78,7 +78,7 @@ export default Selector(complexSelector => {
         }
 
         walkVueComponentNodes(root, 0, (node, tagIndex) => {
-            if (tags[tagIndex].includes('ref:')) {
+            if (tags[tagIndex].indexOf('ref:') !== -1) {
                 const ref = tags[tagIndex].split('ref:')[1];
 
                 return node.$vnode && node.$vnode.data && ref === node.$vnode.data.ref;
