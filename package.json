@@ -1,6 +1,6 @@
 {
   "name": "testcafe-vue-selectors",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "VueJS selectors for TestCafe",
   "repository": "https://github.com/DevExpress/testcafe-vue-selectors",
   "author": {
