@@ -36,7 +36,7 @@ Suppose you have the following markup.
 </script>
 ```
 
-To get the root Vue node, use the VueSelector constructor without parameters.
+To get the root Vue node, use the `VueSelector` constructor without parameters.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -47,7 +47,7 @@ const rootVue = VueSelector();
 The `rootVue` variable will contain the `<div id="todo-app">` element.
 
 
-To get a root DOM element for a component, pass the component name to the VueSelector constructor.
+To get a root DOM element for a component, pass the component name to the `VueSelector` constructor.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -55,7 +55,7 @@ import VueSelector from 'testcafe-vue-selectors';
 const todoInput = VueSelector('todo-input');
 ```
 
-To obtain a component based on vue `ref` value, pass the `ref` value prepended with `ref:` to the VueSelector constructor.
+To obtain a component based on its [reference ID](https://vuejs.org/v2/guide/components-edge-cases.html#Accessing-Child-Component-Instances-amp-Child-Elements), pass the [ref](https://vuejs.org/v2/api/#ref) attribute value prepended with `ref:` to the `VueSelector` constructor.
 
 ```js
 import VueSelector from 'testcafe-vue-selectors';
@@ -83,6 +83,7 @@ var itemsCount = VueSelector().find('.items-count span');
 ```
 
 Let’s use the API described above to add a task to a Todo list and check that the number of items changed.
+
 ```js
 import VueSelector from 'testcafe-vue-selectors';
 
@@ -142,7 +143,7 @@ test('Check list item', async t => {
 });
 ```
 
-As an alternative, the `.getVue()` method can take a function that returns the required property, state or computed property. This function acts as a filter. Its argument is an object returned by `.getVue()`, i.e. `{ props: ..., state: ..., computed: ..., ref: ...}`.
+As an alternative, the `.getVue()` method can take a function that returns the required property, state, computed property or reference ID. This function acts as a filter. Its argument is an object returned by `.getVue()`, i.e. `{ props: ..., state: ..., computed: ..., ref: ...}`.
 
 ```js
 VueSelector('component').getVue(({ props, state, computed, ref }) => {...});
@@ -168,12 +169,13 @@ test('Check list item', async t => {
 
 ```
 
-The `.getVue()` method can be called for the VueSelector or the snapshot this selector returns.
+The `.getVue()` method can be called for the `VueSelector` or the snapshot this selector returns.
 
 #### Limitations
+
 `testcafe-vue-selectors` support Vue starting with version 2.
 
-Only props, state and computed parts of a Vue component are available.
+Only the property, state, computed property and reference ID parts of a Vue component are available.
 
 To check if a component can be found, use the [vue-dev-tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) extension for Google Chrome.
 
