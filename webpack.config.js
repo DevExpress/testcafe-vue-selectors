@@ -5,7 +5,7 @@ module.exports = {
 
     entry: {
         vueLoader: path.resolve(__dirname, './test/data/vue-loader/main.js'),
-        vueRouter: path.resolve(__dirname, './test/data/vue-router/main.js'),
+        vueRouter: path.resolve(__dirname, './test/data/vue-router/main.js')
     },
 
     output: {

@@ -57,6 +57,23 @@ export default Selector(complexSelector => {
                '';
     }
 
+    function isRef (selector) {
+        return selector.indexOf('ref:') !== -1;
+    }
+
+    function getRef (selector) {
+        if (selector.indexOf('ref:') === 0 && selector.split('ref:')[1])
+            return selector.split('ref:')[1];
+
+        throw new Error('If the ref is passed as selector it should be in the format \'ref:ref-selector\'');
+    }
+
+    function getRefOfNode (node) {
+        if (node.$vnode && node.$vnode.data)
+            return node.$vnode.data.ref;
+        return null;
+    }
+
     function filterNodes (root, tags) {
         const foundComponents = [];
 
@@ -77,8 +94,14 @@ export default Selector(complexSelector => {
             }
         }
 
-        walkVueComponentNodes(root, 0, (node, tagIndex) => tags[tagIndex] === getComponentTag(node));
-
+        walkVueComponentNodes(root, 0, (node, tagIndex) => {
+            if (isRef(tags[tagIndex])) {       
+                const ref = getRef(tags[tagIndex]);
+                
+                return ref === getRefOfNode(node);
+            }
+            return tags[tagIndex] === getComponentTag(node);
+        });
         return foundComponents;
     }
 
@@ -133,6 +156,10 @@ export default Selector(complexSelector => {
             return getData(instance, instance.$options.computed || {});
         }
 
+        function getComponentReference (instance) {
+            return instance.$vnode && instance.$vnode.data && instance.$vnode.data.ref;   
+        }
+
         const nodeVue = node.__vue__;
 
         if (!nodeVue)
@@ -141,10 +168,11 @@ export default Selector(complexSelector => {
         const props    = getProps(nodeVue);
         const state    = getState(nodeVue);
         const computed = getComputed(nodeVue);
+        const ref      = getComponentReference(nodeVue);
 
         if (typeof fn === 'function')
-            return fn({ props, state, computed });
+            return fn({ props, state, computed, ref });
 
-        return { props, state, computed };
+        return { props, state, computed, ref };
     }
 });
