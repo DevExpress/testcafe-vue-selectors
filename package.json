@@ -13,18 +13,14 @@
   ],
   "license": "MIT",
   "scripts": {
-    "lint": "eslint src/index.js",
+    "lint": "eslint lib/index.js",
     "test-server": "webpack-dev-server",
     "testcafe": "testcafe all test/*.js --app \"npm run test-server\" --app-init-delay 10000",
-    "test": "npm run lint && npm run build && npm run testcafe",
-    "build": "babel src --out-dir lib",
+    "test": "npm run lint && npm run testcafe",
     "publish-please": "publish-please",
     "prepublish": "publish-please guard"
   },
   "devDependencies": {
-    "@babel/cli": "^7.13.0",
-    "@babel/core": "^7.13.8",
-    "@babel/eslint-parser": "^7.13.8",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.1.1",
     "eslint": "^7.21.0",
