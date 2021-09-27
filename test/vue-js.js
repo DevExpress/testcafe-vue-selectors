@@ -19,13 +19,30 @@ test('selector', async t => {
 
     await t
         .expect(list.count).eql(2)
-        .expect(VueSelector('list-item').count).eql(6)
+        .expect(VueSelector('list-item').count).eql(7)
         .expect(listVue.props.id).eql('list1')
         .expect(listVue.computed.reversedId).eql('1tsil');
 });
 
 test('composite selector', async t => {
     const listItem       = VueSelector('list list-item');
+    const listItemVue6   = await listItem.nth(5).getVue();
+    const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
+
+    await t
+        .expect(listItem.count).eql(6)
+        .expect(listItemVue6.props.id).eql('list2-item3')
+        .expect(listItemVue5Id).eql('list2-item2');
+});
+
+test('findVue chain selector', async t => {
+    const allListItem       = VueSelector().findVue('list-item');
+
+    await t
+        .expect(allListItem.count).eql(7)
+        .expect((await allListItem.nth(6).getVue()).props.id).eql('extra');
+
+    const listItem       = VueSelector('list').findVue('list-item');
     const listItemVue6   = await listItem.nth(5).getVue();
     const listItemVue5Id = listItem.nth(4).getVue(({ props }) => props.id);
 
